@@ -4,4 +4,6 @@ project(untitled)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(untitled main.cpp
-        CImg.h)
+        CImg.h
+        funtions.cpp
+        similarity.cpp)

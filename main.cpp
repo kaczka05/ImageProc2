@@ -1,8 +1,13 @@
 #include "CImg.h"
 #include <iostream>
 #include <set>
+#include  "funtions.h"
+#include "similarity.h"
+
+
 using namespace std;
 using namespace cimg_library;
+
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 int main() {
     CImg<unsigned char> image("lenac_impulse3.bmp");
@@ -26,7 +31,10 @@ int main() {
     cin >> command_name;
     if (command_name == "brightness" || command_name == "b") {
         //cin.ignore(3);
+
         cin >> Iargument;
+        brightness(image, Iargument);
+        /*
         for (int x = 0; x < image.width(); x++) {
             for (int y = 0; y < image.height(); y++) {
                 for (int channel = 0; channel < 3; channel++) {
@@ -42,12 +50,14 @@ int main() {
                     }
                 }
             }
-        }
+        }*/
     }
 
     else if (command_name == "contrast" || command_name == "c") {
         //cin.ignore(3);
         cin >> Fargument;
+        contrast(image, Fargument);
+        /*
         float mem[3] = {0,0,0};
         for (int x = 0; x < image.width(); x++) {
             for (int y = 0; y < image.height(); y++) {
@@ -75,21 +85,26 @@ int main() {
                     }
                 }
             }
-        }
+        }*/
     }
 
     else if (command_name == "negative" || command_name == "n") {
+        negative(image);
+        /*
         for (int x = 0; x < image.width(); x++) {
             for (int y = 0; y < image.height(); y++) {
                 for (int channel = 0; channel < 3; channel++) {
                     image(x,y,channel) = 255 - image(x,y,channel) ;
                 }
             }
-        }
+        }*/
     }
 
 
-    else if (command_name == "horizontal flip" || command_name == "hf"){
+    else if (command_name == "horizontal_flip" || command_name == "hf"){
+
+        horizontal_flip(image);
+        /*
         float temp = image(0, 0, 0);
 
         for (int y = 0; y < image.height(); y++) {
@@ -101,10 +116,13 @@ int main() {
                 }
 
             }
-        }
+        }*/
     }
 
-    else if (command_name == "vflip" || command_name == "vf"){
+    else if (command_name == "vertical_flip" || command_name == "vf"){
+
+        vertical_flip(image);
+        /*
         float temp = image(0, 0, 0);
 
         for (int x = 0; x < image.width(); x++) {
@@ -115,12 +133,15 @@ int main() {
                     image(x, y,channel) = temp;
                 }
             }
-        }
+        }*/
     }
 
 
 
-    else if (command_name == "dflip" || command_name == "df") {
+    else if (command_name == "diagonal_flip" || command_name == "df") {
+
+        diagonal_flip(image);
+        /*
         float temp = image(0, 0, 0);
         for (int x = 0; x < image.width(); x++) {
             for (int y = 0; y < image.height()-x; y++) {
@@ -130,14 +151,16 @@ int main() {
                     image(x, y,channel) = temp;
                 }
             }
-        }
+        }*/
     }
 
     else if (command_name == "enlange" || command_name == "en") {
     int newW, newH;
     cin >> newW >> newH;
 
+    change_size(image, newW, newH);
 
+        /*
          int srcW = image.width();
          int srcH = image.height();
          int channels = 3;
@@ -161,7 +184,7 @@ int main() {
         }
 
         image = dst;
-
+        */
 }
 
 
@@ -171,6 +194,10 @@ int main() {
         int minSize = Iargument;
         cin >> Iargument;
         int maxSize = Iargument;
+
+        adaptive_filter(image, minSize, maxSize);
+
+        /*
         float temp = image(0, 0, 0);
         multiset<float> values;
         int currSize = minSize;
@@ -249,7 +276,7 @@ int main() {
                 }
             }
         }
-        outputImage.save_bmp("out.bmp");
+        outputImage.save_bmp("out.bmp");*/
     }
     //image = outputImage;
     //wypisywac output image w przypadku oczyszczania
@@ -258,4 +285,3 @@ int main() {
     }
     return 0;
 }
-   Features' from the main menu.

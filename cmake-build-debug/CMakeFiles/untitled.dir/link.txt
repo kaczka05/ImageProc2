@@ -1,1 +1,1 @@
-/usr/bin/c++ -g CMakeFiles/untitled.dir/main.cpp.o -o untitled 
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/untitled.dir/link.d CMakeFiles/untitled.dir/main.cpp.o CMakeFiles/untitled.dir/funtions.cpp.o CMakeFiles/untitled.dir/similarity.cpp.o -o untitled
