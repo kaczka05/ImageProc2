@@ -1,0 +1,11 @@
+<<<<<<< HEAD
+ToolSet: 11.0 w64 (local)@C:\Users\damia\AppData\Local\Programs\CLion\bin\mingw
+Ninja: 1.12.1@C:\Users\damia\AppData\Local\Programs\CLion\bin\ninja\win\x64\ninja.exe
+Options: 
+
+Options:-DCMAKE_MAKE_PROGRAM=C:/Users/damia/AppData/Local/Programs/CLion/bin/ninja/win/x64/ninja.exe
+=======
+ToolSet: Ubuntu 24.04.1 LTS (remote)Options: 
+
+Options:
+>>>>>>> 18a041863360695cfde42abd7f68bc822cd0b51d

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\damia\CLionProjects\ImageProc\build\CMakeFiles\224a24c5228492cdf56c29ad90730380\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6E1EDFE9-BAFE-3596-8A0D-3E45E33E9FDE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

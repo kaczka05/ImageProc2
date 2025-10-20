@@ -1,0 +1,334 @@
+#include "CImg.h"
+#include <iostream>
+#include <set>
+using namespace std;
+using namespace cimg_library;
+// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+int main() {
+    CImg<unsigned char> image("lenac_impulse3.bmp");
+    string file_name, command_name;
+    int Iargument;
+    float Fargument;
+    /*for (int x = 0; x < image.width(); x++) {
+        for (int y = 0; y < image.height() ; y++) {
+            float valR = image(x, y, 0); // Read red value at coordinates (x, y)
+            float valG = image(x, y, 1); // Read green value at coordinates (x, y)
+            float valB = image(x, y, 2); // Read blue value at coordinates (x, y)
+            float avg = (valR + valG + valB) / 3; // Compute average pixel value (grey)
+            image(x, y,0) = avg;
+            image(x, y,1) = avg;
+            image(x, y,2) = avg;
+        }
+    }  example from the library, used for reference*/
+    cout << "Hello, write your command in fromat '[file name] [--command] [--argument=value] ... ' use --help to learn the commands " << '\n';
+    //cin >> file_name; do odkomentowania jak bedzie trzeba
+    //cin.ignore(3);
+    cin >> command_name;
+    if (command_name == "brightness" || command_name == "b") {
+        //cin.ignore(3);
+        cin >> Iargument;
+        for (int x = 0; x < image.width(); x++) {
+            for (int y = 0; y < image.height(); y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    float var = image(x, y, channel);
+                    if (var + Iargument > 255) {
+                        image(x,y,channel )= 255;
+                    }
+                    else if (var + Iargument < 0) {
+                        image(x,y, channel) = 0;
+                    }
+                    else {
+                        image(x,y,channel) = var+ Iargument;
+                    }
+                }
+            }
+        }
+    }
+
+    else if (command_name == "contrast" || command_name == "c") {
+        //cin.ignore(3);
+        cin >> Fargument;
+        float mem[3] = {0,0,0};
+        for (int x = 0; x < image.width(); x++) {
+            for (int y = 0; y < image.height(); y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    float var = image(x, y, channel);
+                    mem[channel] += var;
+                }
+            }
+        }
+        for (int channel = 0; channel < 3; channel++) {
+            mem[channel] /= image.width() * image.height();
+        }
+        for (int x = 0; x < image.width(); x++) {
+            for (int y = 0; y < image.height(); y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    float var = (image(x, y, channel)- mem[channel])*Fargument+mem[channel];
+                    if (var > 255) {
+                        image(x,y,channel )= 255;
+                    }
+                    else if (var < 0) {
+                        image(x,y, channel) = 0;
+                    }
+                    else {
+                        image(x,y,channel) = var;
+                    }
+                }
+            }
+        }
+    }
+
+<<<<<<< HEAD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    else if (command_name == "horizontal flip" || command_name == "hf"){
+=======
+    else if (command_name == "negative" || command_name == "n") {
+        for (int x = 0; x < image.width(); x++) {
+            for (int y = 0; y < image.height(); y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    image(x,y,channel) = 255 - image(x,y,channel) ;
+                }
+            }
+        }
+    }
+
+    else if (command_name == "hflip" || command_name == "hf"){
+>>>>>>> 29c45587decbc778381046d411a1a524944230f1
+        float temp = image(0, 0, 0);
+
+        for (int y = 0; y < image.height(); y++) {
+            for (int x = 0; x < image.width()/2; x++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    temp = image(image.width() -1 -x, y, channel);
+                    image(image.width() -1 -x, y, channel) = image(x, y, channel);
+                    image(x, y,channel) = temp;
+                }
+            }
+        }
+    }
+
+    else if (command_name == "vflip" || command_name == "vf"){
+        float temp = image(0, 0, 0);
+        for (int x = 0; x < image.width(); x++) {
+            for (int y = 0; y < image.height()/2; y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    temp = image(x,image.height() - y -1, channel);
+                    image(x, image.height() - y -1, channel) = image(x, y, channel);
+                    image(x, y,channel) = temp;
+                }
+            }
+        }
+    }
+
+<<<<<<< HEAD
+    else if (command_name == "enlange" || command_name == "en") {
+    int newW, newH;
+    cin >> newW >> newH;
+
+
+         int srcW = image.width();
+         int srcH = image.height();
+         int channels = 3;
+
+        CImg<unsigned char> dst(newW, newH, 1, channels, 0);
+
+        for (int i = 0; i < newH; i++) {        // dst row (y)
+            for (int j = 0; j < newW; j++) {    // dst col (x)
+
+                int src_x = (j * srcW) / newW;  // column in source
+                int src_y = (i * srcH) / newH;  // row in source
+
+
+                if (src_x >= srcW) src_x = srcW - 1;
+                if (src_y >= srcH) src_y = srcH - 1;
+
+                for (int c = 0; c < channels; c++) {
+                    dst(j, i, 0, c) = image(src_x, src_y, 0, c);
+                }
+            }
+        }
+
+        image = dst;
+
+}
+
+
+
+    image.save_bmp("out.bmp"); // save the modified image to a file
+=======
+    else if (command_name == "dflip" || command_name == "df") {
+        float temp = image(0, 0, 0);
+        for (int x = 0; x < image.width(); x++) {
+            for (int y = 0; y < image.height()-x; y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    temp = image(image.width() - x - 1,image.height() - y -1, channel);
+                    image(image.width() - x - 1, image.height() - y -1, channel) = image(x, y, channel);
+                    image(x, y,channel) = temp;
+                }
+            }
+        }
+    }
+
+    else if (command_name == "adaptive" || command_name == "a") {
+        cin >> Iargument;
+        int minSize = Iargument;
+        cin >> Iargument;
+        int maxSize = Iargument;
+        float temp = image(0, 0, 0);
+        multiset<float> values;
+        int currSize = minSize;
+        int expX,expY;
+        float minimum,maximum,median,medTemp;
+        CImg<unsigned char> outputImage = image;
+        auto setIter = values.begin();
+        for (int x = minSize; x < image.width()-minSize; x++) {
+            for (int y = minSize; y < image.height()-minSize; y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    values.clear();
+                    //beginning of filter
+                    currSize = minSize;
+                    for(int wx = x-currSize ; wx < x+currSize; wx++) { //preparing a set for minSize
+                        for(int wy = y-currSize ; wy < y+currSize; wy++) {
+                            if (wy >= 0 && wy < image.height() && wx >= 0 && wx < image.width()) {//conditional to not extend the image size
+                                values.insert(image(wx, wy, channel));
+                            }
+                        }
+                    }
+                    while (true) {//loop where we check the window and extend it
+                        minimum = *values.begin();
+                        maximum = *values.rbegin();
+                        setIter = values.begin();
+                        if (values.size()%2 == 0) {//two cases for if the amount of pixels in window is even or odd, to acces set we need an iterator
+                            advance(setIter, values.size() / 2 - 1);
+                            medTemp = *setIter;
+                            ++setIter;
+                            median = (*setIter + medTemp) / 2;
+                        }
+                        else {
+                            advance(setIter, values.size() / 2);
+                            median = *setIter;
+                        }
+                        if (median-minimum>0 && median-maximum < 0) { //first condition, is median extream
+                            if (image(x, y, channel) - minimum > 0 && image(x, y, channel) - maximum < 0 ) { // second condition, is pixel not extream
+                                outputImage(x, y, channel) = image(x, y, channel);
+                                break;
+                            }
+                            else { // pixel is extream
+                                //cout << "used median " << minimum << " " << median << " " << maximum <<  endl;
+                                outputImage(x, y, channel) = median;
+                                break;
+                            }
+                        }
+                        else { // we expand the window to get better median
+                            currSize ++;
+                        }
+                        if (currSize > maxSize) {//we reached the maximum window size
+                            outputImage(x, y, channel) = image(x, y, channel);
+                            break;
+                        }
+                        for (int expIter = 0 ; expIter < currSize*2; expIter++) {//expanding the window by the borders, I add the corners and then the pixels assigned to it in clockwise direction
+                            expX = x-currSize + expIter;
+                            expY = y-currSize;
+                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                                values.insert(image(expX, expY, channel));
+                            }
+                            expX = x+currSize;
+                            expY = y-currSize + expIter;
+                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                                values.insert(image(expX, expY, channel));
+                            }
+                            expX = x+currSize - expIter;
+                            expY = y+currSize;
+                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                                values.insert(image(expX, expY, channel));
+                            }
+                            expX = x-currSize;
+                            expY = y-currSize - expIter;
+                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                                values.insert(image(expX, expY, channel));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        outputImage.save_bmp("out.bmp");
+    }
+    //image = outputImage;
+    //wypisywac output image w przypadku oczyszczania
+    if (command_name != "adaptive" && command_name != "a") {
+        image.save_bmp("out.bmp"); // save the modified image to a file
+    }
+>>>>>>> 29c45587decbc778381046d411a1a524944230f1
+    return 0;
+}

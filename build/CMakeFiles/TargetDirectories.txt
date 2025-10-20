@@ -1,0 +1,3 @@
+C:/Users/damia/CLionProjects/ImageProc/build/CMakeFiles/untitled.dir
+C:/Users/damia/CLionProjects/ImageProc/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/damia/CLionProjects/ImageProc/build/CMakeFiles/ZERO_CHECK.dir
