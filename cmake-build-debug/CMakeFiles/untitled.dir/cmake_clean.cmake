@@ -1,12 +1,13 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/untitled.dir/link.d"
-  "CMakeFiles/untitled.dir/funtions.cpp.o"
-  "CMakeFiles/untitled.dir/funtions.cpp.o.d"
-  "CMakeFiles/untitled.dir/main.cpp.o"
-  "CMakeFiles/untitled.dir/main.cpp.o.d"
-  "CMakeFiles/untitled.dir/similarity.cpp.o"
-  "CMakeFiles/untitled.dir/similarity.cpp.o.d"
-  "untitled"
+  "CMakeFiles/untitled.dir/funtions.cpp.obj"
+  "CMakeFiles/untitled.dir/funtions.cpp.obj.d"
+  "CMakeFiles/untitled.dir/main.cpp.obj"
+  "CMakeFiles/untitled.dir/main.cpp.obj.d"
+  "CMakeFiles/untitled.dir/similarity.cpp.obj"
+  "CMakeFiles/untitled.dir/similarity.cpp.obj.d"
+  "libuntitled.dll.a"
+  "untitled.exe"
+  "untitled.exe.manifest"
   "untitled.pdb"
 )
 

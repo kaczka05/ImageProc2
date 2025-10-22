@@ -2,7 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "untitled"
+			"path" : "untitled.exe"
+		},
+		{
+			"path" : "untitled.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -63,12 +66,16 @@
 			{
 				"fragment" : "-g",
 				"role" : "flags"
+			},
+			{
+				"fragment" : "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"
 	},
 	"name" : "untitled",
-	"nameOnDisk" : "untitled",
+	"nameOnDisk" : "untitled.exe",
 	"paths" : 
 	{
 		"build" : ".",

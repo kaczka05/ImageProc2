@@ -97,15 +97,15 @@ void vertical_flip(CImg<unsigned char>& image) {
 
 void diagonal_flip(CImg<unsigned char>& image) {
     float temp = image(0, 0, 0);
+    CImg<unsigned char> outputImage = image;
     for (int x = 0; x < image.width(); x++) {
-        for (int y = 0; y < image.height()-x; y++) {
+        for (int y = 0; y < image.height(); y++) {
             for (int channel = 0; channel < 3; channel++) {
-                temp = image(image.width() - x - 1,image.height() - y -1, channel);
-                image(image.width() - x - 1, image.height() - y -1, channel) = image(x, y, channel);
-                image(x, y,channel) = temp;
+                outputImage(image.width()-x-1, image.height()-y-1, channel) = image(x, y, channel);
             }
         }
     }
+    outputImage.save_bmp("out.bmp");
 }
 
 void change_size(CImg<unsigned char> &image, int newW, int newH) {
