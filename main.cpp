@@ -1,6 +1,5 @@
 #include "CImg.h"
 #include <iostream>
-#include <set>
 #include  "funtions.h"
 #include "similarity.h"
 
@@ -8,10 +7,13 @@
 using namespace std;
 using namespace cimg_library;
 
+
+
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 int main() {
     CImg<unsigned char> image("lenac_impulse3.bmp");
     string file_name, command_name;
+    CImg<unsigned char> image_orig = image;
     int Iargument;
     float Fargument;
     /*for (int x = 0; x < image.width(); x++) {
@@ -280,6 +282,9 @@ int main() {
     }
     //image = outputImage;
     //wypisywac output image w przypadku oczyszczania
+
+    compute_similarity(image, image_orig);
+    
     if (command_name != "adaptive" && command_name != "a") {
         image.save_bmp("out.bmp"); // save the modified image to a file
     }
