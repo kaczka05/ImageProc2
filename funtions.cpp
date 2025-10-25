@@ -122,8 +122,10 @@ void change_size(CImg<unsigned char> &image, int newW, int newH) {
             int src_y = (i * srcH) / newH;  // row in source
 
 
-            if (src_x >= srcW) src_x = srcW - 1;
-            if (src_y >= srcH) src_y = srcH - 1;
+            if (src_x >= srcW)
+            {src_x = srcW - 1;}
+            if (src_y >= srcH)
+            {src_y = srcH - 1;}
 
             for (int c = 0; c < channels; c++) {
                 dst(j, i, 0, c) = image(src_x, src_y, 0, c);
