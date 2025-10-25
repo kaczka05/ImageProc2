@@ -1,3 +1,0 @@
-C:/Users/damia/Desktop/IT SEM 5/ImageProcesing/ImageProc2/cmake-build-debug/CMakeFiles/untitled.dir
-C:/Users/damia/Desktop/IT SEM 5/ImageProcesing/ImageProc2/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/damia/Desktop/IT SEM 5/ImageProcesing/ImageProc2/cmake-build-debug/CMakeFiles/rebuild_cache.dir

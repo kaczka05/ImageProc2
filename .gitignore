@@ -42,3 +42,10 @@
 
 #images
 *.bmp
+
+# CLion / CMake generated files
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+

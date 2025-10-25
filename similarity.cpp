@@ -2,23 +2,16 @@
 #include "ostream"
 #include "iostream"
 
-struct SimilarityMetrics {
-    double MSE;
-    double PMSE;
-    double SNR;
-    double PSNR;
-    double MD;
-};
 
 using namespace std;
 using namespace cimg_library;
 
-SimilarityMetrics compute_similarity(const CImg<unsigned char>& original, const CImg<unsigned char>& processed) {
+void compute_similarity(const CImg<unsigned char>& original, const CImg<unsigned char>& processed) {
     if (original.width() != processed.width() ||
         original.height() != processed.height() ||
         original.spectrum() != processed.spectrum()) {
-        //std::cerr << "Error: Images must have same dimensions and channels.\n";
-        return {0,0,0,0,0};
+        cout << "Error: Images must have same dimensions and channels.\n";
+
         }
 
     int W = original.width();
