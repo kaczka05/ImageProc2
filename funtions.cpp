@@ -2,6 +2,9 @@
 // Created by HPOMEN on 20.10.2025.
 //
 #include "funtions.h"
+
+#include <iostream>
+#include <ostream>
 #include <set>
 using namespace std;
 
@@ -138,84 +141,134 @@ void change_size(CImg<unsigned char> &image, int newW, int newH) {
 
 void adaptive_filter(CImg<unsigned char> &image, int minSize, int maxSize) {
     float temp = image(0, 0, 0);
-        multiset<float> values;
-        int currSize = minSize;
-        int expX,expY;
-        float minimum,maximum,median,medTemp;
-        CImg<unsigned char> outputImage = image;
-        auto setIter = values.begin();
-        for (int x = minSize; x < image.width()-minSize; x++) {
-            for (int y = minSize; y < image.height()-minSize; y++) {
-                for (int channel = 0; channel < 3; channel++) {
-                    values.clear();
-                    //beginning of filter
-                    currSize = minSize;
-                    for(int wx = x-currSize ; wx < x+currSize; wx++) { //preparing a set for minSize
-                        for(int wy = y-currSize ; wy < y+currSize; wy++) {
-                            if (wy >= 0 && wy < image.height() && wx >= 0 && wx < image.width()) {//conditional to not extend the image size
-                                values.insert(image(wx, wy, channel));
-                            }
+    multiset<float> values;
+    int currSize = minSize;
+    int expX,expY;
+    float minimum,maximum,median,medTemp;
+    CImg<unsigned char> outputImage = image;
+    auto setIter = values.begin();
+    for (int x = minSize; x < image.width()-minSize; x++) {
+        for (int y = minSize; y < image.height()-minSize; y++) {
+            for (int channel = 0; channel < 3; channel++) {
+                values.clear();
+                //beginning of filter
+                currSize = minSize;
+                for(int wx = x-currSize ; wx <= x+currSize; wx++) { //preparing a set for minSize
+                    for(int wy = y-currSize ; wy <= y+currSize; wy++) {
+                        if (wy >= 0 && wy < image.height() && wx >= 0 && wx < image.width()) {//conditional to not extend the image size
+                            values.insert(image(wx, wy, channel));
                         }
                     }
-                    while (true) {//loop where we check the window and extend it
-                        minimum = *values.begin();
-                        maximum = *values.rbegin();
-                        setIter = values.begin();
-                        if (values.size()%2 == 0) {//two cases for if the amount of pixels in window is even or odd, to acces set we need an iterator
-                            advance(setIter, values.size() / 2 - 1);
-                            medTemp = *setIter;
-                            ++setIter;
-                            median = (*setIter + medTemp) / 2;
-                        }
-                        else {
-                            advance(setIter, values.size() / 2);
-                            median = *setIter;
-                        }
-                        if (median-minimum>0 && median-maximum < 0) { //first condition, is median extream
-                            if (image(x, y, channel) - minimum > 0 && image(x, y, channel) - maximum < 0 ) { // second condition, is pixel not extream
-                                outputImage(x, y, channel) = image(x, y, channel);
-                                break;
-                            }
-                            else { // pixel is extream
-                                //cout << "used median " << minimum << " " << median << " " << maximum <<  endl;
-                                outputImage(x, y, channel) = median;
-                                break;
-                            }
-                        }
-                        else { // we expand the window to get better median
-                            currSize ++;
-                        }
-                        if (currSize > maxSize) {//we reached the maximum window size
+                }
+                while (true) {//loop where we check the window and extend it
+                    minimum = *values.begin();
+                    maximum = *values.rbegin();
+                    setIter = values.begin();
+                    if (values.size()%2 == 0) {//two cases for if the amount of pixels in window is even or odd, to acces set we need an iterator
+                        advance(setIter, values.size() / 2 - 1);
+                        medTemp = *setIter;
+                        ++setIter;
+                        median = (*setIter + medTemp) / 2;
+                    }
+                    else {
+                        advance(setIter, values.size() / 2);
+                        median = *setIter;
+                    }
+                    if (median-minimum>0 && median-maximum < 0) { //first condition, is median extream
+                        if (image(x, y, channel) - minimum > 0 && image(x, y, channel) - maximum < 0 ) { // second condition, is pixel not extream
                             outputImage(x, y, channel) = image(x, y, channel);
                             break;
                         }
-                        for (int expIter = 0 ; expIter < currSize*2; expIter++) {//expanding the window by the borders, I add the corners and then the pixels assigned to it in clockwise direction
-                            expX = x-currSize + expIter;
-                            expY = y-currSize;
-                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
-                                values.insert(image(expX, expY, channel));
-                            }
-                            expX = x+currSize;
-                            expY = y-currSize + expIter;
-                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
-                                values.insert(image(expX, expY, channel));
-                            }
-                            expX = x+currSize - expIter;
-                            expY = y+currSize;
-                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
-                                values.insert(image(expX, expY, channel));
-                            }
-                            expX = x-currSize;
-                            expY = y-currSize - expIter;
-                            if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
-                                values.insert(image(expX, expY, channel));
-                            }
+                        else { // pixel is extream
+                            //cout << "used median " << minimum << " " << median << " " << maximum <<  endl;
+                            outputImage(x, y, channel) = median;
+                            break;
+                        }
+                    }
+                    else { // we expand the window to get better median
+                        currSize ++;
+                    }
+                    if (currSize > maxSize) {//we reached the maximum window size
+                        outputImage(x, y, channel) = image(x, y, channel);
+                        break;
+                    }
+                    for (int expIter = 0 ; expIter < currSize*2; expIter++) {//expanding the window by the borders, I add the corners and then the pixels assigned to it in clockwise direction
+                        expX = x-currSize + expIter;
+                        expY = y-currSize;
+                        if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                            values.insert(image(expX, expY, channel));
+                        }
+                        expX = x+currSize;
+                        expY = y-currSize + expIter;
+                        if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                            values.insert(image(expX, expY, channel));
+                        }
+                        expX = x+currSize - expIter;
+                        expY = y+currSize;
+                        if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                            values.insert(image(expX, expY, channel));
+                        }
+                        expX = x-currSize;
+                        expY = y-currSize - expIter;
+                        if (expY >= 0 && expY < image.height() && expX >= 0 && expX < image.width()) {//conditional to not extend the image size
+                            values.insert(image(expX, expY, channel));
                         }
                     }
                 }
             }
         }
+    }
+    outputImage.save_bmp("out.bmp");
+}
+
+    void min_filter(CImg<unsigned char> &image, int Size) {
+        CImg<unsigned char> outputImage = image;
+        int localExtreme;
+        for (int x = Size; x < image.width()-Size; x++) {
+            for (int y = Size; y < image.height()-Size; y++) {
+                for (int channel = 0; channel < 3; channel++) {
+                    localExtreme = image(x,y,channel);
+                    for(int wx = x-Size ; wx <= x+Size; wx++) {
+                        for(int wy = y-Size ; wy <= y+Size; wy++) {
+                            if (wy >= 0 && wy < image.height() && wx >= 0 && wx < image.width()) {//conditional to not extend the image size
+                                if (image(wx, wy, channel) < localExtreme) {
+                                    localExtreme = image(wx, wy, channel);
+                                }
+                            }
+                        }
+                    }
+                    outputImage(x,y,channel) = localExtreme;
+                }
+            }
+        }
         outputImage.save_bmp("out.bmp");
     }
+
+void max_filter(CImg<unsigned char> &image, int Size) {
+    CImg<unsigned char> outputImage = image;
+    int localExtreme;
+    for (int x = Size; x < image.width()-Size; x++) {
+        for (int y = Size; y < image.height()-Size; y++) {
+            for (int channel = 0; channel < 3; channel++) {
+                localExtreme = image(x,y,channel);
+                for(int wx = x-Size ; wx <= x+Size; wx++) {
+                    for(int wy = y-Size ; wy <= y+Size; wy++) {
+                        if (wy >= 0 && wy < image.height() && wx >= 0 && wx < image.width()) {//conditional to not extend the image size
+                            if (image(wx, wy, channel) > localExtreme) {
+                                localExtreme = image(wx, wy, channel);
+                            }
+                        }
+                    }
+                }
+                outputImage(x,y,channel) = localExtreme;
+            }
+        }
+    }
+    outputImage.save_bmp("out.bmp");
+}
+
+
+
+
 
 

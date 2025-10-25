@@ -14,7 +14,7 @@ int main() {
     int Iargument;
     float Fargument;
     //cin >> file_name; do odkomentowania jak bedzie trzeba
-    //cin.ignore(3);
+    //cin.ignore(3)
     do {
         cout << "Write your command in fromat '[file name] [--command] [--argument=value] ... ' use --help to learn the commands " << '\n';
 
@@ -27,7 +27,6 @@ int main() {
 
 
         cin >> command_name;
-
 
 
 
@@ -83,6 +82,16 @@ int main() {
             compare_similarity(image_out, orig);
         }
 
+        else if (command_name == "min" ) {
+            cin >> Iargument;
+            min_filter(image, Iargument);
+        }
+
+        else if (command_name == "max" ) {
+            cin >> Iargument;
+            max_filter(image, Iargument);
+        }
+
         else if (file_name == "help" || file_name == "h" || file_name == "--help") {
             cout << "\n=== AVAILABLE COMMANDS ===\n";
             cout << "File format: [filename] [--command] [--argument=value] ...\n\n";
@@ -106,7 +115,7 @@ int main() {
 
         //image = outputImage;
         //wypisywac output image w przypadku oczyszczania
-        if (command_name != "adaptive" && command_name != "a" && command_name != "diagonal_flip" && command_name != "df") {
+        if (command_name != "adaptive" && command_name != "a" && command_name != "diagonal_flip" && command_name != "df" && command_name != "min" && command_name != "max") {
             image.save_bmp("out.bmp"); // save the modified image to a file
         }
 
