@@ -73,6 +73,6 @@ void compare_similarity(const CImg<unsigned char>& original, const CImg<unsigned
     cout << "PMSE = " << PMSE << endl;
     cout << "SNR = " << SNR << endl;
     cout << "PSNR = " << PSNR << endl;
-    cout<< "MD" << MD << endl;
+    cout<< "MD = " << MD << endl;
 
 }

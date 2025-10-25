@@ -85,11 +85,24 @@ int main() {
         else if (command_name == "min" ) {
             cin >> Iargument;
             min_filter(image, Iargument);
+
+
         }
 
         else if (command_name == "max" ) {
             cin >> Iargument;
             max_filter(image, Iargument);
+
+
+        }
+
+        else if ( command_name == "test") {
+            string file_name1, file_name2;
+            cin>>file_name1>>file_name2;
+
+            CImg<unsigned char> test1(file_name1.c_str());
+            CImg<unsigned char> test2(file_name2.c_str());
+            compare_similarity(test1, test2);
         }
 
         else if (file_name == "help" || file_name == "h" || file_name == "--help") {
