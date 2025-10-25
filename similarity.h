@@ -8,16 +8,10 @@
 #include "CImg.h"
 #include <limits>
 
-struct SimilarityMetrics {
-    double MSE;
-    double PMSE;
-    double SNR;   // in dB
-    double PSNR;  // in dB
-    double MD;    // maximum absolute difference
-};
+
 
 // Compute all metrics. Images must have same size & channels.
-SimilarityMetrics compute_similarity(const cimg_library::CImg<unsigned char>& original,
+void compare_similarity(const cimg_library::CImg<unsigned char>& original,
                                      const cimg_library::CImg<unsigned char>& processed);
 
 
