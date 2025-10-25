@@ -18,5 +18,7 @@ void vertical_flip(CImg<unsigned char>& img);
 void diagonal_flip(CImg<unsigned char>& img);
 void change_size(CImg<unsigned char>& img, int newW, int newH);
 void adaptive_filter(CImg<unsigned char>& img, int minSize, int maxSize);
+void min_filter(CImg<unsigned char>& img, int Size);
+void max_filter(CImg<unsigned char>& img, int Size);
 
 #endif //FUNTIONS_H
