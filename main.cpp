@@ -33,7 +33,6 @@ int main() {
         if (command_name == "brightness" || command_name == "b") {
             cin.ignore(8);
             cin >> input;
-            cout << input << endl;
             brightness(image, stoi(input));
         }
 
