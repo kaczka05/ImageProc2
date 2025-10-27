@@ -80,9 +80,9 @@ int main() {
             cin >> input;
             int maxSize = stoi(input);
             adaptive_filter(image, minSize, maxSize);
-
+            CImg<unsigned char> orig("lenac.bmp");
             CImg<unsigned char> image_out("out.bmp");
-            compare_similarity(image_out, orig);
+            compare_similarity(orig, image_out);
         }
 
         else if (command_name == "min" ) {
@@ -131,7 +131,7 @@ int main() {
 
         //image = outputImage;
         //wypisywac output image w przypadku oczyszczania
-        if (command_name != "adaptive" && command_name != "a" && command_name != "diagonal_flip" && command_name != "df" && command_name != "min" && command_name != "max") {
+        if (command_name != "adaptive" && command_name != "a" && command_name != "diagonal_flip" && command_name != "df" && command_name != "min" && command_name != "max" && command_name !="test") {
             image.save_bmp("out.bmp"); // save the modified image to a file
         }
 
