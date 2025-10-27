@@ -2,6 +2,7 @@
 #include <iostream>
 #include  "funtions.h"
 #include "similarity.h"
+#include "histogram.h"
 #include <cstdlib>
 
 
@@ -13,6 +14,7 @@ int main() {
 
     string file_name, command_name;
     string input, input2;
+    boolean outputToOriginal;
     //cin >> file_name; do odkomentowania jak bedzie trzeba
     //cin.ignore(2);
     do {
@@ -25,8 +27,10 @@ int main() {
         CImg<unsigned char> image(file_name.c_str());
         CImg<unsigned char> orig = image;
 
-        cin.ignore(3);
+        //cin.ignore(3);
+        //odkomendowac w kodzie produkcyjnym
         cin >> command_name;
+        outputToOriginal = true;
 
 
 
@@ -62,6 +66,7 @@ int main() {
         else if (command_name == "diagonal_flip" || command_name == "df") {
 
             diagonal_flip(image);
+            outputToOriginal = false;
         }
 
         else if (command_name == "change_size" || command_name == "chs") {
@@ -83,18 +88,21 @@ int main() {
             CImg<unsigned char> orig("lenac.bmp");
             CImg<unsigned char> image_out("out.bmp");
             compare_similarity(orig, image_out);
+            outputToOriginal = false;
         }
 
         else if (command_name == "min" ) {
             cin.ignore(7);
             cin >> input;
             min_filter(image, stoi(input));
+            outputToOriginal = false;
         }
 
         else if (command_name == "max" ) {
             cin.ignore(7);
             cin >> input;
             max_filter(image, stoi(input));
+            outputToOriginal = false;
         }
 
         else if ( command_name == "test") {
@@ -104,6 +112,12 @@ int main() {
             CImg<unsigned char> test1(file_name.c_str());
             CImg<unsigned char> test2(file_name2.c_str());
             compare_similarity(test1, test2);
+            outputToOriginal = false;
+        }
+
+        else if (command_name == "histogram" || command_name == "his") {
+            outputToOriginal = false;
+            create_histogram(image);
         }
 
         else if (file_name == "help" || file_name == "h" || file_name == "--help") {
@@ -127,11 +141,12 @@ int main() {
             cout << "  adaptive | a <min> <max>     : Apply adaptive filter with min/max window size.\n";
             cout << "  min <size>                   : Apply minimum filter with given window size. \n";
             cout << "  max <size>                   : Apply maximum filter with given window size. \n";
+            outputToOriginal = false;
         }
 
         //image = outputImage;
         //wypisywac output image w przypadku oczyszczania
-        if (command_name != "adaptive" && command_name != "a" && command_name != "diagonal_flip" && command_name != "df" && command_name != "min" && command_name != "max" && command_name !="test") {
+        if (outputToOriginal) {
             image.save_bmp("out.bmp"); // save the modified image to a file
         }
 
