@@ -9,4 +9,6 @@ add_executable(untitled main.cpp
         similarity.cpp
         histogram.cpp
         histogram.h
+        reyleigh.cpp
+        reyleigh.h
 )
