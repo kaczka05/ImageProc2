@@ -9,31 +9,37 @@
 
 void computeReyleigh(cimg_library::CImg<unsigned char>& image, int gmin, int gmax) {
     cimg_library::CImg<unsigned char> outputImage = image;
-    float histogram [256]  = {0} ;
-    float new_histogram [256] = {0} ;
+    float histogram [3][256]  = {0} ;
+    float new_histogram [3][256] = {0} ;
     for (int x = 0 ; x < image.width() ; x++) {
         for (int y = 0 ; y < image.height() ; y++ ) {
-            histogram[image(x,y,0)] ++;
+            for (int c=0;c<3;c++) {
+                histogram[c][image(x,y,c)] ++;
+            }
         }
     }
-    analyseHistogram(histogram,image.width()*image.height());
+    analyseHistogram(histogram[0],image.width()*image.height());
     float newIntensity = 0;
-    for (int i =0 ;i<256;i++) {
-        newIntensity = 0;
-        for (int j = 0;j<=i;j++) {
-            newIntensity += histogram[j];
+    for (int c=0;c<3;c++) {
+        for (int i =0 ;i<256;i++) {
+            newIntensity = 0;
+            for (int j = 0;j<=i;j++) {
+                newIntensity += histogram[c][j];
+            }
+            newIntensity = newIntensity / (image.height()*image.width());
+            newIntensity = 1 - newIntensity;
+            newIntensity = log(max((double)newIntensity, 1.0/(image.height()*image.width()+1.0)));
+            newIntensity = ((float)(gmax-gmin)/3.0) * sqrt(-2*newIntensity)+gmin;
+            newIntensity = min(newIntensity,(float)255);
+            new_histogram[c][i] = newIntensity;
         }
-        newIntensity = newIntensity / (image.height()*image.width());
-        newIntensity = 1 - newIntensity;
-        newIntensity = log(max((double)newIntensity, 1.0/(image.height()*image.width()+1.0)));
-        newIntensity = ((float)(gmax-gmin)/3.0) * sqrt(-2*newIntensity)+gmin;
-        newIntensity = min(newIntensity,(float)255);
-        new_histogram[i] = newIntensity;
     }
-    analyseHistogram(new_histogram,image.width()*image.height());
+    analyseHistogram(new_histogram[0],image.width()*image.height());
     for (int x = 0 ; x < image.width() ; x++) {
         for (int y = 0 ; y < image.height() ; y++ ) {
-            outputImage(x,y,0) = new_histogram[image(x,y, 0)];
+            outputImage(x,y,0) = new_histogram[0][image(x,y,0)];
+            outputImage(x,y,1) = new_histogram[1][image(x,y,1)];
+            outputImage(x,y,2) = new_histogram[2][image(x,y,2)];
         }
     }
     outputImage.save("reyleigh.bmp");
