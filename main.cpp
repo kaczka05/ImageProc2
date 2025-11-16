@@ -5,8 +5,10 @@
 #include "histogram.h"
 #include <cstdlib>
 
+#include "LLFilter.h"
 #include "reyleigh.h"
-
+#include "perf.h"
+#include "lowpass_filter.h"
 
 using namespace std;
 using namespace cimg_library;
@@ -16,7 +18,7 @@ int main() {
 
     string file_name, command_name;
     string input, input2;
-    boolean outputToOriginal;
+    bool outputToOriginal;
     //cin >> file_name; do odkomentowania jak bedzie trzeba
     //cin.ignore(2);
     do {
@@ -159,6 +161,29 @@ int main() {
             outputToOriginal = false;
             informationSourceEnthropy(image,image.size());
         }
+        else if (command_name == "lowpass" || command_name == "lp") {
+            //cin.ignore(8);
+            cin >> input;
+            lowpass_filter_universal(image, stoi(input));
+            outputToOriginal = true;
+        }
+
+        else if (command_name == "lowpass_opt" || command_name == "lpo") {
+            //cin.ignore(12);
+            cin >> input;
+            lowpass_filter_optimized(image, stoi(input));
+            outputToOriginal = true;
+        }
+        else if (command_name == "oll") {
+
+            int k;
+            cin>>k;
+            ll_filter(image, k);
+        }
+
+
+
+
         else if (file_name == "help" || file_name == "h" || file_name == "--help") {
             cout << "\n=== AVAILABLE COMMANDS ===\n";
             cout << "Input format: [filename] [--command] [--argument=value] ...\n\n";

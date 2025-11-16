@@ -23,7 +23,7 @@ void create_histogram(CImg<unsigned char>& image) {
     int histHeight = 300;
     CImg<unsigned char> histImg(256, 300, 1, 3, 255); // white background
 
-    // 3️⃣ Draw vertical bars
+
     for (int i = 0; i < 256; i++) {
         int barHeight = (histogram[i]*histHeight)/(max+1);
         for (int j=0; j<=barHeight; j++) {

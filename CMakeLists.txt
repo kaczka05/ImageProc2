@@ -11,4 +11,10 @@ add_executable(untitled main.cpp
         histogram.h
         reyleigh.cpp
         reyleigh.h
+        lowpass_filter.cpp
+        lowpass_filter.h
+        perf.cpp
+        perf.h
+        LLFilter.cpp
+        LLFilter.h
 )
