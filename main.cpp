@@ -5,6 +5,8 @@
 #include "histogram.h"
 #include <cstdlib>
 
+#include "reyleigh.h"
+
 
 using namespace std;
 using namespace cimg_library;
@@ -120,6 +122,43 @@ int main() {
             create_histogram(image);
         }
 
+        else if ( command_name == "hrayleigh" || command_name == "hr") {
+            outputToOriginal = false;
+            cin >> input;
+            int minSize = stoi(input);
+            cin >> input;
+            int maxSize = stoi(input);
+            computeReyleigh(image, minSize, maxSize);
+        }
+
+        else if ( command_name == "cmean" ) {
+            outputToOriginal = false;
+            mean(image,image.size());
+        }
+        else if ( command_name == "cvariance" ) {
+            outputToOriginal = false;
+            variance(image,image.size());
+        }
+        else if ( command_name == "cstdev" ) {
+            outputToOriginal = false;
+            standardDeviation(image,image.size());
+        }
+        else if ( command_name == "cvarcoi" ) {
+            outputToOriginal = false;
+            variationCoefficient1(image,image.size());
+        }
+        else if ( command_name == "casyco" ) {
+            outputToOriginal = false;
+            asymmetryCoefficient(image,image.size());
+        }
+        else if ( command_name == "cvarcoii" ) {
+            outputToOriginal = false;
+            variationCoefficient2(image,image.size());
+        }
+        else if ( command_name == "centropy" ) {
+            outputToOriginal = false;
+            informationSourceEnthropy(image,image.size());
+        }
         else if (file_name == "help" || file_name == "h" || file_name == "--help") {
             cout << "\n=== AVAILABLE COMMANDS ===\n";
             cout << "Input format: [filename] [--command] [--argument=value] ...\n\n";
