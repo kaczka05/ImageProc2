@@ -66,7 +66,7 @@ void lowpass_filter_universal(CImg<unsigned char>& img, int mask_size) {
 
     perf::add_memory((size_t)out.size() + mask.size() * sizeof(float));
 
-
+    perf::stop();
     img = out;
     //out.save_bmp("out.bmp");
 }
@@ -141,7 +141,7 @@ void lowpass_filter_optimized(CImg<unsigned char>& img, int mask_size) {
             }
         }
     }
-
+    perf::stop();
     img = out;
     //out.save_bmp("out.bmp");
 }
