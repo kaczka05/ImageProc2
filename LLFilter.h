@@ -14,7 +14,7 @@ using namespace cimg_library;
 
 
 // Callable function version of LL filter
-void ll_filter(CImg<unsigned char>& img, int mask_size);
+void ll_filter(CImg<unsigned char>& img, double power);
 
 
 

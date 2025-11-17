@@ -176,9 +176,14 @@ int main() {
         }
         else if (command_name == "oll") {
 
-            int k;
+            double k;
             cin>>k;
             ll_filter(image, k);
+        }
+
+        else if (command_name == "report") {
+            perf::report();
+            outputToOriginal = false;
         }
 
 
