@@ -135,31 +135,31 @@ int main() {
 
         else if ( command_name == "cmean" ) {
             outputToOriginal = false;
-            mean(image,image.size());
+            mean(image,image.width()*image.height());
         }
         else if ( command_name == "cvariance" ) {
             outputToOriginal = false;
-            variance(image,image.size());
+            variance(image,image.width()*image.height());
         }
         else if ( command_name == "cstdev" ) {
             outputToOriginal = false;
-            standardDeviation(image,image.size());
+            standardDeviation(image,image.width()*image.height());
         }
         else if ( command_name == "cvarcoi" ) {
             outputToOriginal = false;
-            variationCoefficient1(image,image.size());
+            variationCoefficient1(image,image.width()*image.height());
         }
         else if ( command_name == "casyco" ) {
             outputToOriginal = false;
-            asymmetryCoefficient(image,image.size());
+            asymmetryCoefficient(image,image.width()*image.height());
         }
         else if ( command_name == "cvarcoii" ) {
             outputToOriginal = false;
-            variationCoefficient2(image,image.size());
+            variationCoefficient2(image,image.width()*image.height());
         }
         else if ( command_name == "centropy" ) {
             outputToOriginal = false;
-            informationSourceEnthropy(image,image.size());
+            informationSourceEnthropy(image,image.width()*image.height());
         }
         else if (command_name == "lowpass" || command_name == "lp") {
             //cin.ignore(8);

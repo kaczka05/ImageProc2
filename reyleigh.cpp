@@ -18,7 +18,7 @@ void computeReyleigh(cimg_library::CImg<unsigned char>& image, int gmin, int gma
             }
         }
     }
-    analyseHistogram(histogram[0],image.width()*image.height());
+    analyseHistogram(image,image.width()*image.height());
     float newIntensity = 0;
     for (int c=0;c<3;c++) {
         for (int i =0 ;i<256;i++) {
@@ -34,7 +34,7 @@ void computeReyleigh(cimg_library::CImg<unsigned char>& image, int gmin, int gma
             new_histogram[c][i] = newIntensity;
         }
     }
-    analyseHistogram(new_histogram[0],image.width()*image.height());
+
     for (int x = 0 ; x < image.width() ; x++) {
         for (int y = 0 ; y < image.height() ; y++ ) {
             outputImage(x,y,0) = new_histogram[0][image(x,y,0)];
@@ -42,10 +42,17 @@ void computeReyleigh(cimg_library::CImg<unsigned char>& image, int gmin, int gma
             outputImage(x,y,2) = new_histogram[2][image(x,y,2)];
         }
     }
+    analyseHistogram( outputImage, image.width()*image.height());
     outputImage.save("reyleigh.bmp");
 }
-void analyseHistogram(float histogram[256],float pixelAmount) {
+void analyseHistogram(cimg_library::CImg<unsigned char>& image,float pixelAmount) {
     float output = 0;
+    float histogram [256]  = {0} ;
+    for (int x = 0 ; x < image.width() ; x++) {
+        for (int y = 0 ; y < image.height() ; y++ ) {
+            histogram[image(x,y,0)] ++;
+        }
+    }
     for (int i = 0 ; i < 256 ; i++) {
         output += histogram[i]*(i);
     }
@@ -96,6 +103,7 @@ void analyseHistogram(float histogram[256],float pixelAmount) {
 
 void mean(cimg_library::CImg<unsigned char>& image,float pixelAmount) {
     float histogram [256]  = {0} ;
+    cout << pixelAmount << " " << image.width() * image.height() << endl;
     for (int x = 0 ; x < image.width() ; x++) {
         for (int y = 0 ; y < image.height() ; y++ ) {
             histogram[image(x,y,0)] ++;
@@ -315,9 +323,11 @@ void informationSourceEnthropy(cimg_library::CImg<unsigned char>& image,float pi
     output = output/pow(pixelAmount,2);
     output = 0;
     for (int i = 0 ; i < 256 ; i++) {
-        output += histogram[i]*(i) * log2(histogram[i]*(i)/pixelAmount);
+        if (histogram[i] != 0) {
+            output += histogram[i]* log2(histogram[i]/pixelAmount);
+        }
     }
-    output = output/pixelAmount * -1;
+    output = output/pixelAmount * -1.0;
     cout << "Information source entropy = " << output << endl;
 }
 

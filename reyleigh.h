@@ -10,7 +10,7 @@
 #include <algorithm>
 using namespace std;
     void computeReyleigh(cimg_library::CImg<unsigned char>& image, int gmin, int gmax);
-    void analyseHistogram(float histogram[255],float pixelAmount);
+    void analyseHistogram(cimg_library::CImg<unsigned char>& image,float pixelAmount);
     void mean(cimg_library::CImg<unsigned char>& image,float pixelAmount);
     void variance(cimg_library::CImg<unsigned char>& image,float pixelAmount);
     void standardDeviation(cimg_library::CImg<unsigned char>& image,float pixelAmount);

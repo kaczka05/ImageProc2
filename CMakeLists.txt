@@ -18,4 +18,6 @@ add_executable(untitled main.cpp
         perf.h
         LLFilter.cpp
         LLFilter.h
+        regionGrowth.cpp
+        regionGrowth.h
 )
