@@ -9,6 +9,7 @@
 #include "reyleigh.h"
 #include "perf.h"
 #include "lowpass_filter.h"
+#include "regionGrowth.h"
 
 using namespace std;
 using namespace cimg_library;
@@ -184,6 +185,11 @@ int main() {
         else if (command_name == "report") {
             perf::report();
             outputToOriginal = false;
+        }
+        else if (command_name == "regionGrowth" || command_name == "rg") {
+            cin >> input;
+            outputToOriginal = false;
+            regionGrowth(image, stoi(input));
         }
 
 
