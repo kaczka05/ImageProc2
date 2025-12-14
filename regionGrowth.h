@@ -25,6 +25,7 @@ struct region {
 };
 void regionGrowth(cimg_library::CImg<unsigned char>& image, int seedAmount);
 float calculateNewParameter(float regionVariance,float regionMean, int regionSize, int pixelIntensity, int parameterId);
-boolean doesNewParameterFit(float originalRegionParameter, float newRegionParameter, int parameterId,int newSize);
+boolean doesNewParameterFit(region reg, float newRegionParameter);
+boolean doesNewVarianceFit(region reg, float newVariance);
 float calculateNewRegionParameters(float firstRegionMean, float firstRegionVariance, int firstRegionSize, float secondRegionMean, float secondRegionVariance, int secondRegionSize,int parameterId);
-float calculateVariance(region reg);
+float calculateVariance(region reg,region reg2);

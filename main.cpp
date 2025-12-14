@@ -10,6 +10,7 @@
 #include "perf.h"
 #include "lowpass_filter.h"
 #include "morphology.h"
+#include "regionGrowth.h"
 
 
 using namespace std;
@@ -187,6 +188,10 @@ int main() {
             perf::report();
             outputToOriginal = false;
         }
+        else if (command_name == "regionGrowth" || command_name == "rg") {
+            cin >> input;
+            outputToOriginal = false;
+            regionGrowth(image, stoi(input));
 
         else if (command_name == "dilate" || command_name == "dilation") {
             std::string type; int size;
