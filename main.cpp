@@ -9,6 +9,8 @@
 #include "reyleigh.h"
 #include "perf.h"
 #include "lowpass_filter.h"
+#include "morphology.h"
+
 
 using namespace std;
 using namespace cimg_library;
@@ -184,6 +186,54 @@ int main() {
         else if (command_name == "report") {
             perf::report();
             outputToOriginal = false;
+        }
+
+        else if (command_name == "dilate" || command_name == "dilation") {
+            std::string type; int size;
+            cin >> type >> size;
+            morphology::StructuringElement se = morphology::makeStructuringElement(type, size);
+            image = morphology::dilate(image, se);
+        }
+
+
+        else if (command_name == "erode" || command_name == "erosion") {
+            std::string type; int size;
+            cin >> type >> size;
+            morphology::StructuringElement se = morphology::makeStructuringElement(type, size);
+            image = morphology::erode(image, se);
+        }
+
+
+        else if (command_name == "open" || command_name == "opening") {
+            std::string type; int size;
+            cin >> type >> size;
+            morphology::StructuringElement se = morphology::makeStructuringElement(type, size);
+            image = morphology::opening(image, se);
+        }
+
+
+        else if (command_name == "close" || command_name == "closing") {
+            std::string type; int size;
+            cin >> type >> size;
+            morphology::StructuringElement se = morphology::makeStructuringElement(type, size);
+            image = morphology::closing(image, se);
+        }
+
+
+        else if (command_name == "hmt") {
+            std::string pattern;
+            cin >> pattern;
+            if (pattern == "endpoint") {
+                image = morphology::hitAndMissEndpoint(image);
+            }
+        }
+
+
+
+        else if (command_name == "region_grow" || command_name == "rg") {
+            int seedThreshold, mergeThreshold, connectivity;
+            cin >> seedThreshold >> mergeThreshold >> connectivity;
+            image = region_growing::regionGrowAuto(image, seedThreshold, mergeThreshold, connectivity);
         }
 
 

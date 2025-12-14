@@ -20,4 +20,6 @@ add_executable(untitled main.cpp
         LLFilter.h
         regionGrowth.cpp
         regionGrowth.h
+        morphology.cpp
+        morphology.h
 )
