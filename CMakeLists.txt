@@ -22,4 +22,6 @@ add_executable(untitled main.cpp
         regionGrowth.h
         morphology.cpp
         morphology.h
+        MorphologicalM4.cpp
+        MorphologicalM4.h
 )

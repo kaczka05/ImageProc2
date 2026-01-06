@@ -106,29 +106,55 @@ CImg<unsigned char> closing(
     return erode(dilate(src, se), se);
 }
 
-CImg<unsigned char> hitAndMissEndpoint(
-    const CImg<unsigned char>& src
-) {
+    CImg<unsigned char> hitAndMissEndpoint(
+        const CImg<unsigned char>& src
+    ) {
     CImg<unsigned char> out(
         src.width(), src.height(), 1, 1, 0
     );
 
     for (int y = 1; y < src.height() - 1; ++y) {
         for (int x = 1; x < src.width() - 1; ++x) {
-            if (!isForeground(src(x,y))) continue;
 
-            int count = 0;
-            for (int dy = -1; dy <= 1; ++dy)
-                for (int dx = -1; dx <= 1; ++dx)
-                    if (!(dx == 0 && dy == 0) &&
-                        isForeground(src(x+dx, y+dy)))
-                        ++count;
+            if (!isForeground(src(x, y)))
+                continue;
 
-            if (count == 1)
-                out(x,y) = 255;
+            // Count foreground neighbors and remember their position
+            int fgCount = 0;
+            int lastDx = 0, lastDy = 0;
+
+            for (int dy = -1; dy <= 1; ++dy) {
+                for (int dx = -1; dx <= 1; ++dx) {
+                    if (dx == 0 && dy == 0) continue;
+
+                    if (isForeground(src(x + dx, y + dy))) {
+                        fgCount++;
+                        lastDx = dx;
+                        lastDy = dy;
+                    }
+                }
+            }
+
+            // Must have exactly one foreground neighbor
+            if (fgCount != 1)
+                continue;
+
+            // Explicitly accept horizontal and vertical endpoints
+            bool isHorizontal =
+                (lastDx ==  1 && lastDy == 0); //||  // X o
+                //(lastDx == -1 && lastDy == 0);    // o X
+
+            bool isVertical =
+                (lastDx == 0 && lastDy ==  1) ||  // x
+                (lastDx == 0 && lastDy == -1);    // o
+
+            if (isHorizontal || isVertical)
+                out(x, y) = 255;
         }
     }
+
     return out;
 }
+
 
 }

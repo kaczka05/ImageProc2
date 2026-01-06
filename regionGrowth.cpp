@@ -76,7 +76,7 @@ void regionGrowth(cimg_library::CImg<unsigned char>& image, int seedAmount) {
     region reg1, reg2;
     int newSize;
     region currentRegion;
-    boolean passed;
+    bool passed;
     cout << "entered main loop" <<'\n';
     cout << queue.size() << '\n';
     while (queue.size()>0) {
@@ -226,7 +226,7 @@ void regionGrowth(cimg_library::CImg<unsigned char>& image, int seedAmount) {
 
 
 
-boolean doesNewParameterFit(region reg, float newRegionParameter) {
+bool doesNewParameterFit(region reg, float newRegionParameter) {
     //Parametrisation up to user
     float meanCriteria = 20;
     float varianceCriteria = 2.35;
@@ -243,7 +243,7 @@ boolean doesNewParameterFit(region reg, float newRegionParameter) {
     return false;
 }
 
-boolean doesNewVarianceFit(region reg, float newVariance) {
+bool doesNewVarianceFit(region reg, float newVariance) {
     float varianceCriteria = 15;
     if (abs(newVariance-reg.regionVariance) < varianceCriteria) {
         return 1;
