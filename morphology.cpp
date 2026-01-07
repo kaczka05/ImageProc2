@@ -119,7 +119,7 @@ CImg<unsigned char> closing(
             if (!isForeground(src(x, y)))
                 continue;
 
-            // Count foreground neighbors and remember their position
+            // Count neighbours and pos
             int fgCount = 0;
             int lastDx = 0, lastDy = 0;
 
@@ -135,11 +135,11 @@ CImg<unsigned char> closing(
                 }
             }
 
-            // Must have exactly one foreground neighbor
+
             if (fgCount != 1)
                 continue;
 
-            // Explicitly accept horizontal and vertical endpoints
+
             bool isHorizontal =
                 (lastDx ==  1 && lastDy == 0); //||  // X o
                 //(lastDx == -1 && lastDy == 0);    // o X

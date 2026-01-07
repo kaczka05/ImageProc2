@@ -2,14 +2,12 @@
 
 using namespace cimg_library;
 
+
 bool MorphologicalM4::inBounds(int x, int y, int w, int h) {
     return x >= 0 && y >= 0 && x < w && y < h;
 }
 
-// ------------------------------------------------------------
-// Hit-or-Miss Transform
-// A ⊗ B = (A ⊖ B1) ∩ (Ac ⊖ B2)
-// ------------------------------------------------------------
+
 CImg<unsigned char>
 MorphologicalM4::hitOrMiss(const CImg<unsigned char>& A,
                            const StructuringElement& B)
@@ -24,7 +22,7 @@ MorphologicalM4::hitOrMiss(const CImg<unsigned char>& A,
 
             bool ok = true;
 
-            // Erosion of A by B1
+            // whote check
             for (const auto& p : B.B1) {
                 int nx = x + p.first;
                 int ny = y + p.second;
@@ -36,7 +34,7 @@ MorphologicalM4::hitOrMiss(const CImg<unsigned char>& A,
 
             if (!ok) continue;
 
-            // Erosion of Ac by B2
+            // black check
             for (const auto& p : B.B2) {
                 int nx = x + p.first;
                 int ny = y + p.second;
@@ -54,12 +52,7 @@ MorphologicalM4::hitOrMiss(const CImg<unsigned char>& A,
     return result;
 }
 
-// ------------------------------------------------------------
-// Iterative rule:
-// X0 = A
-// Xk = (Xk-1 ⊗ B) ∪ A
-// until convergence
-// ------------------------------------------------------------
+
 CImg<unsigned char>
 MorphologicalM4::iterate(const CImg<unsigned char>& A,
                          const StructuringElement& B)
@@ -69,6 +62,7 @@ MorphologicalM4::iterate(const CImg<unsigned char>& A,
 
     do {
         prev = X;
+
         CImg<unsigned char> h = hitOrMiss(X, B);
 
         cimg_forXY(X, x, y) {
@@ -83,10 +77,7 @@ MorphologicalM4::iterate(const CImg<unsigned char>& A,
     return X;
 }
 
-// ------------------------------------------------------------
-// Final result:
-// H(A) = D1 ∪ D2 ∪ D3 ∪ D4
-// ------------------------------------------------------------
+
 CImg<unsigned char>
 MorphologicalM4::computeH(const CImg<unsigned char>& A,
                           const std::vector<StructuringElement>& elements)
@@ -98,6 +89,7 @@ MorphologicalM4::computeH(const CImg<unsigned char>& A,
 
     for (const auto& B : elements) {
         CImg<unsigned char> D = iterate(A, B);
+
         cimg_forXY(result, x, y) {
             if (D(x,y))
                 result(x,y) = 255;

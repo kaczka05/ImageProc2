@@ -12,6 +12,7 @@
 #include "morphology.h"
 #include "regionGrowth.h"
 #include "MorphologicalM4.h"
+#include <chrono>
 
 
 using namespace std;
@@ -236,87 +237,90 @@ int main() {
         }
 
 
-        else if (command_name == "m4" || command_name == "hmt_m4") {
-    // Usage:
-    //   [filename] m4 [threshold]
-    // Example:
-    //   lena.bmp m4 128
-    //
-    // If threshold is omitted, 128 is used.
+else if (command_name == "m4" || command_name == "hmt_m4") {
 
-    std::string thr_token;
-    int threshold_value = 128; // default
 
-    // Try to read an optional threshold argument
-    // (if user supplies none, this will not break the next loop iteration
-    //  since the main loop reads file name first)
-    if (std::cin.peek() != '\n') {
-        // attempt to read the next token as threshold
-        if (std::cin >> thr_token) {
-            try {
-                threshold_value = std::stoi(thr_token);
-            } catch (...) {
-                threshold_value = 128;
-            }
+    std::string rest;
+    std::getline(std::cin, rest);
+    std::istringstream iss(rest);
+
+    std::vector<std::string> args;
+    std::string tok;
+    while (iss >> tok) args.push_back(tok);
+
+    bool useAlt = false;
+    int threshold_value = 128;
+
+    for (auto &t : args) {
+        std::string tl = t;
+        for (auto &ch : tl) ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+        if (tl == "alt" || tl == "alternate") {
+            useAlt = true;
+            continue;
         }
+        try {
+            threshold_value = std::stoi(t);
+        } catch (...) {}
     }
 
-    // Convert (possibly color) image to grayscale by averaging channels
+    //grayscale
     CImg<unsigned char> gray(image.width(), image.height(), 1, 1, 0);
     if (image.spectrum() == 1) {
-        gray = image; // already single channel
+        gray = image;
     } else {
         cimg_forXY(image, x, y) {
             int sum = 0;
-            for (int c = 0; c < image.spectrum(); ++c) sum += image(x, y, 0, c);
-            gray(x, y) = static_cast<unsigned char>(sum / image.spectrum());
+            for (int c = 0; c < image.spectrum(); ++c)
+                sum += image(x,y,0,c);
+            gray(x,y) = static_cast<unsigned char>(sum / image.spectrum());
         }
     }
 
-    // Binarize using threshold_value: pixels >= threshold -> 255, else 0
-    CImg<unsigned char> bin = gray;
-    bin.threshold(threshold_value); // CImg::threshold sets pixels >= value to max (255) else 0
 
-    // Build the four structuring elements exactly as specified
+    CImg<unsigned char> bin = gray;
+    bin.threshold(threshold_value);
+
     using SE = MorphologicalM4::StructuringElement;
     std::vector<SE> elements;
 
-    // Element 1: 'x o'  (right neighbor required)
-    SE B1;
-    B1.B1 = {{+1, 0}}; // required foreground offsets
-    B1.B2 = {};        // no background constraints
-    elements.push_back(B1);
+    auto start = std::chrono::high_resolution_clock::now();
 
-    // Element 2: 'x' over 'o'  (below neighbor required)
-    SE B2;
-    B2.B1 = {{0, +1}};
-    B2.B2 = {};
-    elements.push_back(B2);
+    if (!useAlt) {
 
-    // Element 3: full 8-neighbor (all 'o' around center)
-    SE B3;
-    B3.B1 = {
-        {-1,-1}, {0,-1}, {+1,-1},
-        {-1, 0},         {+1, 0},
-        {-1,+1}, {0,+1}, {+1,+1}
-    };
-    B3.B2 = {};
-    elements.push_back(B3);
+        SE B1; B1.B1 = {{+1,0}}; B1.B2 = {}; elements.push_back(B1);
+        SE B2; B2.B1 = {{0,+1}}; B2.B2 = {}; elements.push_back(B2);
+        SE B3; B3.B1 = {{-1,-1},{0,-1},{+1,-1},{-1,0},{+1,0},{-1,+1},{0,+1},{+1,+1}}; B3.B2 = {}; elements.push_back(B3);
+        SE B4; B4.B1 = {{0,-1},{-1,0},{+1,0},{0,+1}}; B4.B2 = {}; elements.push_back(B4);
+    } else {
 
-    // Element 4: 4-neighbour cross (up, left, right, down)
-    SE B4;
-    B4.B1 = {{0,-1}, {-1,0}, {+1,0}, {0,+1}};
-    B4.B2 = {};
-    elements.push_back(B4);
+        SE P1; P1.B1 = {{-1,-1},{-1,0},{-1,1}}; P1.B2 = {{0,0}}; elements.push_back(P1);
+        SE P2; P2.B1 = {{-1,-1},{0,-1},{1,-1}};  P2.B2 = {{0,0}}; elements.push_back(P2);
+        SE P3; P3.B1 = {{1,-1},{1,0},{1,1}};     P3.B2 = {{0,0}}; elements.push_back(P3);
+        SE P4; P4.B1 = {{-1,1},{0,1},{1,1}};     P4.B2 = {{0,0}}; elements.push_back(P4);
+    }
 
-    // Compute H(A) as D1 ∪ D2 ∪ D3 ∪ D4 (per M4)
-    CImg<unsigned char> H = MorphologicalM4::computeH(bin, elements);
+    // union
+    CImg<unsigned char> H(bin.width(), bin.height(), 1, 1, 0);
 
-    // Save output and avoid overwriting original variable unless you want to
+    for (const auto &B : elements) {
+        CImg<unsigned char> hits = MorphologicalM4::hitOrMiss(bin, B);
+        cimg_forXY(H, x, y) {
+            if (hits(x,y)) H(x,y) = 255;
+        }
+    }
+
     H.save_bmp("out.bmp");
-    image = H; // if you prefer to continue working with the result in memory
+    image = H;
     outputToOriginal = false;
+    auto end = std::chrono::high_resolution_clock::now();
+    double ms = std::chrono::duration<double, std::milli>(end - start).count();
+
+    std::cout << "Processing time: " << ms << " ms\n";
 }
+
+
+
+
 
 
 
@@ -350,7 +354,7 @@ int main() {
         //image = outputImage;
         //wypisywac output image w przypadku oczyszczania
         if (outputToOriginal) {
-            image.save_bmp("out.bmp"); // save the modified image to a file
+            image.save_bmp("out.bmp");
         }
 
 
