@@ -245,17 +245,17 @@ int main() {
 
         else if (command_name == "ftsn") {
             outputToOriginal = false;
-            spatialToFreq(image);
+            freqToSpatial(image);
         }
 
         else if (command_name == "stff") {
             outputToOriginal = false;
-            spatialToFreq(image);
+            spatialToFreqFast(image);
         }
 
         else if (command_name == "ftsf") {
             outputToOriginal = false;
-            spatialToFreq(image);
+            spatialToFreqFast(image);
         }
 
 else if (command_name == "m4" || command_name == "hmt_m4") {
