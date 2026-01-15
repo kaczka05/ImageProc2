@@ -24,4 +24,6 @@ add_executable(untitled main.cpp
         morphology.h
         MorphologicalM4.cpp
         MorphologicalM4.h
+        TransFourier.cpp
+        TransFourier.h
 )

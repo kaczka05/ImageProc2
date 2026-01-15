@@ -14,6 +14,8 @@
 #include "MorphologicalM4.h"
 #include <chrono>
 
+#include "TransFourier.h"
+
 
 using namespace std;
 using namespace cimg_library;
@@ -236,6 +238,25 @@ int main() {
             }
         }
 
+        else if (command_name == "stfn") {
+            outputToOriginal = false;
+            spatialToFreq(image);
+        }
+
+        else if (command_name == "ftsn") {
+            outputToOriginal = false;
+            spatialToFreq(image);
+        }
+
+        else if (command_name == "stff") {
+            outputToOriginal = false;
+            spatialToFreq(image);
+        }
+
+        else if (command_name == "ftsf") {
+            outputToOriginal = false;
+            spatialToFreq(image);
+        }
 
 else if (command_name == "m4" || command_name == "hmt_m4") {
 
