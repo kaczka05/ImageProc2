@@ -26,4 +26,6 @@ add_executable(untitled main.cpp
         MorphologicalM4.h
         TransFourier.cpp
         TransFourier.h
+        FreqFilters.cpp
+        FreqFilters.h
 )
