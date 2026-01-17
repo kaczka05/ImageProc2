@@ -245,7 +245,7 @@ int main() {
 
         else if (command_name == "ftsn") {
             outputToOriginal = false;
-            freqToSpatial(image);
+            //freqToSpatial(image);
         }
 
         else if (command_name == "stff") {
@@ -255,7 +255,7 @@ int main() {
 
         else if (command_name == "ftsf") {
             outputToOriginal = false;
-            spatialToFreqFast(image);
+            //spatialToFreqFast(image);
         }
 
 else if (command_name == "m4" || command_name == "hmt_m4") {
