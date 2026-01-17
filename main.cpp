@@ -341,6 +341,31 @@ else if (command_name == "m4" || command_name == "hmt_m4") {
 
 
 
+else if (command_name == "flp") {
+    double d; cin >> d;
+    freqLowPass(image, d);
+}
+else if (command_name == "fhp") {
+    double d; cin >> d;
+    freqHighPass(image, d);
+}
+else if (command_name == "fbp") {
+    double d1, d2; cin >> d1 >> d2;
+    freqBandPass(image, d1, d2);
+}
+else if (command_name == "fbs") {
+    double d1, d2; cin >> d1 >> d2;
+    freqBandStop(image, d1, d2);
+}
+else if (command_name == "fdir") {
+    double cutoff, dir;
+    cin >> cutoff >> dir;
+    freqDirectionalHP(image, cutoff, dir);
+}
+else if (command_name == "fphase") {
+    int k, l; cin >> k >> l;
+    freqPhaseModify(image, k, l);
+}
 
 
 
