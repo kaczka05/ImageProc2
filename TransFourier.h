@@ -16,8 +16,8 @@ struct comp {
 vector<vector<comp>> spatialToFreq(cimg_library::CImg<unsigned char>& image);
 vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image);
 void freqToSpatial(vector<vector<comp>>);
-void spatialToFreq(vector<vector<comp>>);
-void stfFFT(int start,int size,int depth);
+void freqToSpatialFast(vector<vector<comp>>);
+void stfFFT(int start,int size,int depth, boolean foreward);
 
 
 #endif //UNTITLED_TRANSFOURIER_H

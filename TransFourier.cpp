@@ -106,7 +106,7 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.i = 0;
             mem.push_back(temp);
         }
-        stfFFT(0,w,1);
+        stfFFT(0,w,1,1);
         freqA.push_back(mem);
     }
     for (int u = 0; u < w; u++) {
@@ -117,14 +117,17 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.i = freqA[v][u].i;
             mem.push_back(temp);
         }
-        stfFFT(0,h,1);
+        stfFFT(0,h,1,1);
         freq.push_back(mem);
-        for (int v = 0; v < h; v++) {
-            val = freq[u][v].r * freq[u][v].r +
-                 freq[u][v].i * freq[u][v].i;
-            if (val > max) {
-                max = val;
-            }
+    }
+    for (int v =0; v < h; v++)
+    {
+        for (int u = 0; u < w; u++) {
+                val = freq[v][u].r * freq[v][u].r +
+                        freq[v][u].i * freq[v][u].i;
+                if (val > max) {
+                    max = val;
+                }
         }
     }
     cout << "XD" << endl;
@@ -167,17 +170,24 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
     }
     outputImage.save("freqSpectrum.bmp");
     cout << "Saved" << endl;
+    freqToSpatialFast(freq);
     return freq;
 }
-void stfFFT(int start,int size,int depth) {
+void stfFFT(int start,int size,int depth, boolean foreward) {
     if (size > 2) {
-        stfFFT(start,size/2,depth*2);
-        stfFFT(start+depth,size/2,depth*2);
+            stfFFT(start,size/2,depth*2,foreward);
+            stfFFT(start+depth,size/2,depth*2,foreward);
+
     }
     comp temp, temp2;
     double angle;
     for (int i = start; i < size + start; i+=2*depth) {
-        angle = 2 * pi * ((i-start)/depth) / size;
+        if (foreward) {
+            angle = -2 * pi * ((i-start)/(depth*2)) / size;
+        }
+        else {
+            angle = 2 * pi * ((i-start)/(depth*2)) / size;
+        }
         temp.r  = mem[i].r + mem[i+depth].r*cos(angle) - mem[i+depth].i*sin(angle);
         temp.i  = mem[i].i + mem[i+depth].r*sin(angle) + mem[i+depth].i*cos(angle);
         temp2.r = mem[i].r - mem[i+depth].r*cos(angle) + mem[i+depth].i*sin(angle);
@@ -249,6 +259,82 @@ void freqToSpatial(vector<vector<comp>> image) {
     for (int v = 0; v < h; v++) {
         for (int u = 0; u < w; u++) {
             value =  clamp((int)round(freq[v][u]),0,255);
+            outputImage(u,v,0) = value;
+        }
+    }
+    outputImage.save("spatialSpectrum.bmp");
+    cout << "Saved" << endl;
+}
+
+void freqToSpatialFast(vector<vector<comp>> image) {
+    int w = image[0].size();
+    int h = image.size();
+    vector<vector<comp>> freqA;
+    vector<vector<comp>> freq;
+    comp temp;
+    double val;
+    double savey;
+    double max = 0;
+    comp sum;
+    double pix1,pix2;
+    freqA = image;
+    for (int i=0;i<h/2;i++)
+    {
+        for (int j=0;j<w/2;j++) {
+            temp = image[i][j];
+            image[i][j] = freqA[i+h/2][j+w/2];
+            image[i+h/2][j+w/2] = temp;
+        }
+    }
+    for (int i=h/2;i<h;i++)
+    {
+        for (int j=0;j<w/2;j++) {
+            temp = image[i][j];
+            image[i][j] = freqA[i-h/2][j+w/2];
+            image[i-h/2][j+w/2] = temp;
+        }
+    }
+    freqA.clear();
+    for (int v = 0; v < h; v++)
+    {
+        //cout << v << endl;
+        mem.clear();
+        for (int u = 0; u < w; u++) {
+            temp.r = image[v][u].r //* ((u + v) % 2 ? -1.0 : 1.0)
+            ;
+            temp.i = image[v][u].i;
+            mem.push_back(temp);
+        }
+        stfFFT(0,w,1,0);
+        freqA.push_back(mem);
+    }
+    for (int u = 0; u < w; u++) {
+        //cout << u << endl;
+        mem.clear();
+        for (int v = 0; v < h; v++) {
+            temp.r = freqA[v][u].r;
+            temp.i = freqA[v][u].i;
+            mem.push_back(temp);
+        }
+        stfFFT(0,h,1,0);
+        freq.push_back(mem);
+    }
+    cout << "XD" << endl;
+    freqA = freq;
+    for (int i=0;i<h;i++) {
+        for (int j=0;j<w;j++) {
+            freq[i][j] = freqA[h-i-1][w-j-1];
+        }
+    }
+
+    //frequency domain computed
+    cout << "XD" << endl;
+    //frequency domain computed
+    cimg_library::CImg<unsigned char> outputImage(w, h, 1, 1, 0);;
+    int value;
+    for (int v = 0; v < h; v++) {
+        for (int u = 0; u < w; u++) {
+            value =  clamp((int)round(freq[v][u].r/(w*h)),0,255);
             outputImage(u,v,0) = value;
         }
     }
