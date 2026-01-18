@@ -18,7 +18,6 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
 void freqToSpatial(vector<vector<comp>>);
 void spatialToFreq(vector<vector<comp>>);
 void stfFFT(int start,int size,int depth);
-int bitReverse(int x, int log2n);
 
 
 #endif //UNTITLED_TRANSFOURIER_H
