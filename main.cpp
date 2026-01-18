@@ -82,9 +82,9 @@ int main() {
         }
 
         else if (command_name == "change_size" || command_name == "chs") {
-            cin.ignore(8);
+            //lenacin.ignore(8);
             cin >> input;
-            cin.ignore(9);
+            //cin.ignore(9);
             cin >> input2;
             change_size(image, stoi(input), stoi(input2));
         }
@@ -369,11 +369,17 @@ else if (command_name == "fbs") {
     outputToOriginal = false;
 }
 else if (command_name == "fdir") {
-    // directional high-pass: cutoffRadius directionDeg
-    double cutoff, dir; cin >> cutoff >> dir;
-    freqDirectionalHP(image, cutoff, dir);
+    // directional high-pass with user mask
+    double cutoff;
+    std::string maskFilename;
+
+    cin >> cutoff;
+    cin >> maskFilename;
+
+    freqDirectionalHP(image, cutoff, maskFilename.c_str());
     outputToOriginal = false;
 }
+
 else if (command_name == "fphase") {
     // phase modify: k l
     int k, l; cin >> k >> l;

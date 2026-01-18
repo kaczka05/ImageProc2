@@ -23,7 +23,7 @@ void freqBandStop(cimg_library::CImg<unsigned char>& image, double lowRadius, do
 
 // Directional high-pass: cutoffRadius (remove low freqs) + directionDeg
 // directionDeg is angle in degrees (0 points to +x, 90 to +y). Angular tolerance is fixed (~30°).
-void freqDirectionalHP(cimg_library::CImg<unsigned char>& image, double cutoffRadius, double directionDeg);
+void freqDirectionalHP(cimg_library::CImg<unsigned char>& image, double cutoffRadius,  const char* maskFilename);
 
 // Phase modifying filter (F6)
 // k,l integers define linear phase P(n,m) = exp(j*(-2π*k*n/N - 2π*l*m/M + (k+l)*π))

@@ -150,50 +150,65 @@ void freqBandStop(CImg<unsigned char>& image, double lowRadius, double highRadiu
     applyMaskAndReturn(F);
 }
 
-// F5: Directional high-pass edge detector.
-// remove low freqs (< cutoffRadius) and then keep frequencies whose angle is
-// within +/- ANG_TOL degrees of directionDeg.
-void freqDirectionalHP(CImg<unsigned char>& image, double cutoffRadius, double directionDeg) {
-    const double ANG_TOL_DEG = 30.0; // angular tolerance (±30°). Fixed; change if needed.
-
+// F5: Directional / arbitrary high-pass filter using a user-provided mask image.
+// The mask image must be grayscale; white = keep, black = remove.
+// Mask is assumed to be aligned with the frequency layout.
+void freqDirectionalHP(CImg<unsigned char>& image,
+                       double cutoffRadius,
+                       const char* maskFilename)
+{
     int W = image.width();
     int H = image.height();
+
     vector<vector<comp>> F = spatialToFreq(image);
+
+    // Load mask image
+    CImg<unsigned char> mask(maskFilename);
+
+    // Resize mask if needed
+    if (mask.width() != W || mask.height() != H) {
+        mask.resize(W, H, 1, 1);
+    }
 
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
 
     double r2 = cutoffRadius * cutoffRadius;
-    double theta = directionDeg * M_PI / 180.0;
-    double tol = ANG_TOL_DEG * M_PI / 180.0;
 
     for (int v = 0; v < H; ++v) {
-        double dv = double(v - cy);
+        int dv = v - cy;
         for (int u = 0; u < W; ++u) {
-            double du = double(u - cx);
-            double d2 = du*du + dv*dv;
+            int du = u - cx;
+            double d2 = double(du*du + dv*dv);
 
-            // remove low-frequency region
+            // High-pass cutoff
             if (d2 <= r2) {
                 F[v][u].r = 0.0;
                 F[v][u].i = 0.0;
                 continue;
             }
 
-            // compute angle of this frequency vector
-            double angle = std::atan2(dv, du);          // range (-pi, pi]
-            // compute smallest angular distance to requested direction (wrap-aware)
-            double diff = std::fmod(angle - theta + 3*M_PI, 2*M_PI) - M_PI;
-            if (std::fabs(diff) > tol) {
-                // not within the target directional wedge -> discard
-                F[v][u].r = 0.0;
-                F[v][u].i = 0.0;
-            }
+            // Mask value in [0,1]
+            double m = mask(u, v, 0, 0) / 255.0;
+
+            // Apply attenuation
+            F[v][u].r *= m;
+            F[v][u].i *= m;
+
+            // Enforce conjugate symmetry
+            int us = (2 * cx - u + W) % W;
+            int vs = (2 * cy - v + H) % H;
+
+            F[vs][us].r *= m;
+            F[vs][us].i *= m;
         }
     }
 
     applyMaskAndReturn(F);
 }
+
+
+
 
 // F6: Phase modifying filter: multiply each frequency element by a unit-magnitude complex
 // number P(n,m) = exp(j*( -2π*k*n/N - 2π*l*m/M + (k+l)π ))
