@@ -83,6 +83,15 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.i = 0;
             mem.push_back(temp);
         }
+        int log2N = log2(w);
+
+        // 1️⃣ Bit reversal permutation
+        for (int i = 0; i < w; i++) {
+            int j = bitReverse(i, log2N);
+            if (j > i) {
+                swap(mem[i], mem[j]);
+            }
+        }
         stfFFT(0,w,1);
         freqA.push_back(mem);
     }
@@ -94,10 +103,20 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.i = freqA[v][u].i;
             mem.push_back(temp);
         }
+        int log2N = log2(h);
+
+        // 1️⃣ Bit reversal permutation
+        for (int i = 0; i < h; i++) {
+            int j = bitReverse(i, log2N);
+            if (j > i) {
+                swap(mem[i], mem[j]);
+            }
+        }
         stfFFT(0,h,1);
         freq.push_back(mem);
         for (int v = 0; v < h; v++) {
-            val = (pow(freq[u][v].r,2) + pow(freq[u][v].i,2));
+            val = freq[u][v].r * freq[u][v].r +
+                 freq[u][v].i * freq[u][v].i;
             if (val > max) {
                 max = val;
             }
@@ -139,7 +158,14 @@ void stfFFT(int start,int size,int depth) {
         mem[i+depth] = temp2;
     }
 }
-
+int bitReverse(int x, int log2n) {
+    int n = 0;
+    for (int i = 0; i < log2n; i++) {
+        n = (n << 1) | (x & 1);
+        x >>= 1;
+    }
+    return n;
+}
 
 
 
