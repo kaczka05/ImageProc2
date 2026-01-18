@@ -1,11 +1,12 @@
 #include "FreqFilters.h"
 #include <functional>
+#include "TransFourier.h"
 
 
 using namespace cimg_library;
 using std::vector;
 
-static inline double dist(int u, int v, int cx, int cy) {
+/*static inline double dist(int u, int v, int cx, int cy) {
     double du = u - cx;
     double dv = v - cy;
     return std::sqrt(du * du + dv * dv);
@@ -137,3 +138,4 @@ void freqPhaseModify(CImg<unsigned char>& image, int k, int l) {
 
     ifft2D(F, image);
 }
+*/

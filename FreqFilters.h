@@ -3,13 +3,10 @@
 
 #include "CImg.h"
 #include <vector>
+#include "TransFourier.h"
 #include <cmath>
 
 // Reuse existing complex structure
-struct comp {
-    double r;
-    double i;
-};
 
 /*
  Assumed external FFT interface (to be implemented elsewhere)

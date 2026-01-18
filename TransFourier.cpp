@@ -35,7 +35,7 @@
                         sum.i -= pix2*sin(temp);
                     }
                 }
-                freq[v][u] = sum;
+                freq[v].push_back(sum);
                 temp = (pow(freq[v][u].r,2) + pow(freq[v][u].i,2));
                 if (temp > max) {
                     max = temp;
@@ -83,15 +83,6 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.i = 0;
             mem.push_back(temp);
         }
-        int log2N = log2(w);
-
-        // 1️⃣ Bit reversal permutation
-        for (int i = 0; i < w; i++) {
-            int j = bitReverse(i, log2N);
-            if (j > i) {
-                swap(mem[i], mem[j]);
-            }
-        }
         stfFFT(0,w,1);
         freqA.push_back(mem);
     }
@@ -102,15 +93,6 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.r = freqA[v][u].r;
             temp.i = freqA[v][u].i;
             mem.push_back(temp);
-        }
-        int log2N = log2(h);
-
-        // 1️⃣ Bit reversal permutation
-        for (int i = 0; i < h; i++) {
-            int j = bitReverse(i, log2N);
-            if (j > i) {
-                swap(mem[i], mem[j]);
-            }
         }
         stfFFT(0,h,1);
         freq.push_back(mem);

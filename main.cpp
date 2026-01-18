@@ -15,6 +15,7 @@
 #include <chrono>
 
 #include "TransFourier.h"
+#include "FreqFilters.h"
 
 
 using namespace std;
@@ -341,7 +342,7 @@ else if (command_name == "m4" || command_name == "hmt_m4") {
 
 
 
-else if (command_name == "flp") {
+/*else if (command_name == "flp") {
     double d; cin >> d;
     freqLowPass(image, d);
 }
@@ -365,7 +366,7 @@ else if (command_name == "fdir") {
 else if (command_name == "fphase") {
     int k, l; cin >> k >> l;
     freqPhaseModify(image, k, l);
-}
+}*/
 
 
 
