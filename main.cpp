@@ -246,20 +246,13 @@ int main() {
             horizontal_flip(image);
         }
 
-        else if (command_name == "ftsn") {
-            outputToOriginal = false;
-            //freqToSpatial(stfn(image));
-        }
-
         else if (command_name == "stff") {
             outputToOriginal = false;
             spatialToFreqFast(image);
+            CImg<unsigned char> image("spatialSpectrum.bmp");
+            vertical_flip(image);
         }
 
-        else if (command_name == "ftsf") {
-            outputToOriginal = false;
-            //spatialToFreqFast(image);
-        }
 
 else if (command_name == "m4" || command_name == "hmt_m4") {
 

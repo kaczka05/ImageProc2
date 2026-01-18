@@ -175,8 +175,7 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.i = 0;
             mem.push_back(temp);
         }
-        stfFFT(0,w,1,1);
-        bitReversal(mem);
+        stfFFT(mem,1);
         freqA.push_back(mem);
     }
     for (int u = 0; u < w; u++) {
@@ -187,8 +186,7 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             temp.i = freqA[v][u].i;
             mem.push_back(temp);
         }
-        stfFFT(0,h,1,1);
-        bitReversal(mem);
+        stfFFT(mem,1);
         freq.push_back(mem);
     }
     for (int v =0; v < h; v++)
@@ -245,28 +243,28 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
     freqToSpatialFast(freq);
     return freq;
 }
-void stfFFT(int start,int size,int depth, boolean foreward) {
-    if (size > 2) {
-            stfFFT(start,size/2,depth*2,foreward);
-            stfFFT(start+depth,size/2,depth*2,foreward);
+void stfFFT(vector<comp>& a, bool foreward) {
+    int n = a.size();
+    if (n <= 1) return;
 
+    vector<comp> a0(n / 2), a1(n / 2);
+    for (int i = 0; 2 * i < n; i++) {
+        a0[i] = a[2 * i];
+        a1[i] = a[2 * i + 1];
     }
-    comp temp, temp2;
-    double angle;
-    for (int i = start; i < size + start; i+=2*depth) {
-        if (foreward) {
-            angle = -2.0 * pi * (double)((i-start)/(depth*2)) / (double)size;
-        }
-        else {
-            angle = 2.0 * pi * (double)((i-start)/(depth*2)) / (double)size;
-        }
-        temp.r  = mem[i].r + mem[i+depth].r*cos(angle) - mem[i+depth].i*sin(angle);
-        temp.i  = mem[i].i + mem[i+depth].r*sin(angle) + mem[i+depth].i*cos(angle);
-        temp2.r = mem[i].r - mem[i+depth].r*cos(angle) + mem[i+depth].i*sin(angle);
-        temp2.i = mem[i].i - mem[i+depth].r*sin(angle) - mem[i+depth].i*cos(angle);
 
-        mem[i] = temp;
-        mem[i+depth] = temp2;
+    stfFFT(a0, foreward);
+    stfFFT(a1, foreward);
+
+    double angle = 2.0 * M_PI / n * (foreward ? -1 : 1);
+    comp w(1, 0), wn(cos(angle), sin(angle));
+
+    for (int i = 0; i < n / 2; i++) {
+        comp u = a0[i];
+        comp v = w * a1[i];
+        a[i] = u + v;
+        a[i + n / 2] = u - v;
+        w = w * wn;
     }
 }
 int bitReverse(int index, int log2n) {
@@ -330,8 +328,7 @@ void freqToSpatialFast(vector<vector<comp>> image) {
             temp.i = image[v][u].i;
             mem.push_back(temp);
         }
-        stfFFT(0,w,1,0);
-        bitReversal(mem);
+        stfFFT(mem,0);
         freqA.push_back(mem);
     }
     for (int u = 0; u < w; u++) {
@@ -342,8 +339,7 @@ void freqToSpatialFast(vector<vector<comp>> image) {
             temp.i = freqA[v][u].i;
             mem.push_back(temp);
         }
-        stfFFT(0,h,1,0);
-        bitReversal(mem);
+        stfFFT(mem,0);
         freq.push_back(mem);
     }
     cout << "XD" << endl;
@@ -351,6 +347,12 @@ void freqToSpatialFast(vector<vector<comp>> image) {
     for (int i=0;i<h;i++) {
         for (int j=0;j<w;j++) {
             freq[i][j] = freqA[h-i-1][w-j-1];
+        }
+    }
+    freqA = freq;
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            freq[x][h - 1 - y] = freqA[y][x];
         }
     }
 
