@@ -3,50 +3,31 @@
 
 #include "CImg.h"
 #include <vector>
-#include "TransFourier.h"
 #include <cmath>
+#include "TransFourier.h"
 
-// Reuse existing complex structure
+// All functions operate on grayscale CImg<unsigned char> & and rely on the
+// TransFourier interface:
+//   vector<vector<comp>> spatialToFreq(CImg<unsigned char>& image);
+//   vector<vector<comp>> spatialToFreqFast(CImg<unsigned char>& image);
+//   void freqToSpatial(vector<vector<comp>> spectrum);
+//
+// The spectrum layout is assumed to be freq[row=v][col=u] (i.e. freq[H][W]),
+// but the code will auto-detect whether DC lives at (0,0) or at the center
+// and adjust masks accordingly.
 
-/*
- Assumed external FFT interface (to be implemented elsewhere)
+void freqLowPass(cimg_library::CImg<unsigned char>& image, double cutoffRadius);
+void freqHighPass(cimg_library::CImg<unsigned char>& image, double cutoffRadius);
+void freqBandPass(cimg_library::CImg<unsigned char>& image, double lowRadius, double highRadius);
+void freqBandStop(cimg_library::CImg<unsigned char>& image, double lowRadius, double highRadius);
 
- - spectrum is size [H][W]
- - image is grayscale (1 channel)
+// Directional high-pass: cutoffRadius (remove low freqs) + directionDeg
+// directionDeg is angle in degrees (0 points to +x, 90 to +y). Angular tolerance is fixed (~30°).
+void freqDirectionalHP(cimg_library::CImg<unsigned char>& image, double cutoffRadius, double directionDeg);
 
- These functions MUST exist at link time.
-*/
-void fft2D(const cimg_library::CImg<unsigned char>& spatial,
-           std::vector<std::vector<comp>>& spectrum);
+// Phase modifying filter (F6)
+// k,l integers define linear phase P(n,m) = exp(j*(-2π*k*n/N - 2π*l*m/M + (k+l)*π))
+// where n = row index (0..N-1), m = col index (0..M-1)
+void freqPhaseModify(cimg_library::CImg<unsigned char>& image, int k, int l);
 
-void ifft2D(const std::vector<std::vector<comp>>& spectrum,
-            cimg_library::CImg<unsigned char>& spatial);
-
-// ===== Filters =====
-
-// (F1) Low-pass (high-cut)
-void freqLowPass(cimg_library::CImg<unsigned char>& image, double cutoff);
-
-// (F2) High-pass (low-cut)
-void freqHighPass(cimg_library::CImg<unsigned char>& image, double cutoff);
-
-// (F3) Band-pass
-void freqBandPass(cimg_library::CImg<unsigned char>& image,
-                  double lowCut, double highCut);
-
-// (F4) Band-stop (band-cut)
-void freqBandStop(cimg_library::CImg<unsigned char>& image,
-                  double lowCut, double highCut);
-
-// (F5) Directional high-pass edge detector
-// direction in degrees: 0, 45, 90, 135
-void freqDirectionalHP(cimg_library::CImg<unsigned char>& image,
-                       double cutoff,
-                       double directionDeg);
-
-// (F6) Phase modifying filter
-// P(n,m) = exp(j * ( -2πkn/N - 2πlm/M + (k+l)π ))
-void freqPhaseModify(cimg_library::CImg<unsigned char>& image,
-                     int k, int l);
-
-#endif
+#endif // FREQFILTERS_H

@@ -342,31 +342,42 @@ else if (command_name == "m4" || command_name == "hmt_m4") {
 
 
 
-/*else if (command_name == "flp") {
-    double d; cin >> d;
-    freqLowPass(image, d);
+else if (command_name == "flp") {
+    // low-pass: cutoff radius in pixels
+    double cutoff; cin >> cutoff;
+    freqLowPass(image, cutoff);
+    outputToOriginal = false;
 }
 else if (command_name == "fhp") {
-    double d; cin >> d;
-    freqHighPass(image, d);
+    // high-pass: cutoff radius in pixels
+    double cutoff; cin >> cutoff;
+    freqHighPass(image, cutoff);
+    outputToOriginal = false;
 }
 else if (command_name == "fbp") {
-    double d1, d2; cin >> d1 >> d2;
-    freqBandPass(image, d1, d2);
+    // band-pass: lowRadius highRadius
+    double r1, r2; cin >> r1 >> r2;
+    freqBandPass(image, r1, r2);
+    outputToOriginal = false;
 }
 else if (command_name == "fbs") {
-    double d1, d2; cin >> d1 >> d2;
-    freqBandStop(image, d1, d2);
+    // band-stop: lowRadius highRadius
+    double r1, r2; cin >> r1 >> r2;
+    freqBandStop(image, r1, r2);
+    outputToOriginal = false;
 }
 else if (command_name == "fdir") {
-    double cutoff, dir;
-    cin >> cutoff >> dir;
+    // directional high-pass: cutoffRadius directionDeg
+    double cutoff, dir; cin >> cutoff >> dir;
     freqDirectionalHP(image, cutoff, dir);
+    outputToOriginal = false;
 }
 else if (command_name == "fphase") {
+    // phase modify: k l
     int k, l; cin >> k >> l;
     freqPhaseModify(image, k, l);
-}*/
+    outputToOriginal = false;
+}
 
 
 
