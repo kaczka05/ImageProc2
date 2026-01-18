@@ -21,6 +21,7 @@
         for (int v = 0; v < h; v++)
         {
             cout << v << endl;
+            freq.push_back(vector<comp>(0));
             for (int u = 0; u < w; u++) {
                 sum.r = 0;
                 sum.i = 0;
@@ -37,6 +38,7 @@
                 }
                 freq[v].push_back(sum);
                 temp = (pow(freq[v][u].r,2) + pow(freq[v][u].i,2));
+
                 if (temp > max) {
                     max = temp;
                 }
