@@ -242,11 +242,13 @@ int main() {
         else if (command_name == "stfn") {
             outputToOriginal = false;
             spatialToFreq(image);
+            CImg<unsigned char> image("spatialSpectrum.bmp");
+            horizontal_flip(image);
         }
 
         else if (command_name == "ftsn") {
             outputToOriginal = false;
-            //freqToSpatial(image);
+            //freqToSpatial(stfn(image));
         }
 
         else if (command_name == "stff") {
