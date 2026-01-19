@@ -338,31 +338,31 @@ else if (command_name == "m4" || command_name == "hmt_m4") {
 
 
 else if (command_name == "flp") {
-    // low-pass: cutoff radius in pixels
+
     double cutoff; cin >> cutoff;
     freqLowPass(image, cutoff);
     outputToOriginal = false;
 }
 else if (command_name == "fhp") {
-    // high-pass: cutoff radius in pixels
+
     double cutoff; cin >> cutoff;
     freqHighPass(image, cutoff);
     outputToOriginal = false;
 }
 else if (command_name == "fbp") {
-    // band-pass: lowRadius highRadius
+
     double r1, r2; cin >> r1 >> r2;
     freqBandPass(image, r1, r2);
     outputToOriginal = false;
 }
 else if (command_name == "fbs") {
-    // band-stop: lowRadius highRadius
+
     double r1, r2; cin >> r1 >> r2;
     freqBandStop(image, r1, r2);
     outputToOriginal = false;
 }
 else if (command_name == "fdir") {
-    // directional high-pass with user mask
+
     double cutoff;
     std::string maskFilename;
 
@@ -374,13 +374,73 @@ else if (command_name == "fdir") {
 }
 
 else if (command_name == "fphase") {
-    // phase modify: k l
+
     int k, l; cin >> k >> l;
     freqPhaseModify(image, k, l);
     outputToOriginal = false;
 }
 
 
+else if (command_name == "hm") {
+
+
+
+    std::string r1, r2, r3;
+    cin >> r1 >> r2 >> r3;
+
+    std::vector<int> mask;
+    auto pushRow = [&](const std::string& r) {
+        for (int i = 0; i < 3; ++i)
+            mask.push_back(r[i] == '1' ? 1 : 0);
+    };
+
+    pushRow(r1);
+    pushRow(r2);
+    pushRow(r3);
+
+
+    CImg<unsigned char> gray(image.width(), image.height(), 1, 1, 0);
+    if (image.spectrum() == 1) gray = image;
+    else {
+        cimg_forXY(image, x, y) {
+            int s = 0;
+            for (int c = 0; c < image.spectrum(); ++c)
+                s += image(x,y,0,c);
+            gray(x,y) = s / image.spectrum();
+        }
+    }
+
+    gray.threshold(128);
+
+    image = morphology::hitAndMissCustom(gray, mask);
+    image.save_bmp("out.bmp");
+    outputToOriginal = false;
+}
+
+else if (command_name == "m4_iter" || command_name == "m4i") {
+
+    std::string rest; std::getline(std::cin, rest);
+
+    //int threshold_value = 128;
+
+
+
+
+
+
+    // time
+    auto start = std::chrono::high_resolution_clock::now();
+
+    CImg<unsigned char> H = morphology::m4Iterative(image);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    double ms = std::chrono::duration<double, std::milli>(end - start).count();
+    std::cout << "Processing time (m4_iter): " << ms << " ms\n";
+
+    H.save_bmp("out.bmp");
+    image = H;
+    outputToOriginal = false;
+}
 
 
 
@@ -391,7 +451,7 @@ else if (command_name == "fphase") {
             cout << "Input format: [filename] [--command] [--argument=value] ...\n\n";
 
             cout << "General:\n";
-            cout << "  help | h                     : Show this help message.\n";
+            cout << "  help | h                     : S how this help message.\n";
             cout << "  quit | q                     : Exit the program.\n\n";
 
             cout << "Image operations:\n";

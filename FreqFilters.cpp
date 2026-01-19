@@ -5,47 +5,41 @@
 using namespace cimg_library;
 using std::vector;
 
-// Helper: magnitude squared
+
 static inline double mag2(const comp &c) {
     return c.r * c.r + c.i * c.i;
 }
 
-// Helper: pick center (cx,cy) used for radial/angle computations.
-// If spectrum magnitude at center is larger than at (0,0), assume DC is centered;
-// otherwise assume DC at (0,0). This makes masks robust to either layout.
+
 static void decideCenter(const vector<vector<comp>>& F, int W, int H, int &cx, int &cy) {
     cx = W / 2;
     cy = H / 2;
-    // defensive check: if sizes mismatch, fallback to (0,0)
     if ((int)F.size() != H || (int)F[0].size() != W) {
         cx = 0; cy = 0;
         return;
     }
     double magCorner = mag2(F[0][0]);              // DC at (0,0) candidate
     double magCenter = mag2(F[cy][cx]);            // DC at center candidate
-    // choose the location that has the larger DC magnitude (robust heuristic)
+    // choose the location with biger dc
     if (magCenter > magCorner) {
-        // keep cx,cy as center
+
     } else {
         cx = 0; cy = 0;
     }
 }
 
-// Apply a binary mask to the spectrum in place.
-// maskFunc should set F[v][u] = {0,0} for frequencies to remove.
+
 static void applyMaskAndReturn(vector<vector<comp>>& F) {
-    // After modification, hand back to the provided freqToSpatial
-    // (freqToSpatial is declared in TransFourier.h and must be implemented
-    //  to reconstruct the image from the modified spectrum).
+
     freqToSpatial(F);
 }
 
-// F1: Low-pass: keep frequencies with distance <= cutoffRadius
+
 void freqLowPass(CImg<unsigned char>& image, double cutoffRadius) {
     int W = image.width();
     int H = image.height();
 
-    // get spectrum (non-fast, consistent row-major freq[v][u])
+
     vector<vector<comp>> F = spatialToFreq(image);
 
     int cx, cy;
@@ -67,7 +61,7 @@ void freqLowPass(CImg<unsigned char>& image, double cutoffRadius) {
     applyMaskAndReturn(F);
 }
 
-// F2: High-pass: remove frequencies with distance <= cutoffRadius (keep high freq)
+
 void freqHighPass(CImg<unsigned char>& image, double cutoffRadius) {
     int W = image.width();
     int H = image.height();
@@ -92,7 +86,7 @@ void freqHighPass(CImg<unsigned char>& image, double cutoffRadius) {
     applyMaskAndReturn(F);
 }
 
-// F3: Band-pass: keep only frequencies with lowRadius <= d <= highRadius
+
 void freqBandPass(CImg<unsigned char>& image, double lowRadius, double highRadius) {
     if (lowRadius < 0) lowRadius = 0;
     if (highRadius < lowRadius) std::swap(lowRadius, highRadius);
@@ -121,7 +115,7 @@ void freqBandPass(CImg<unsigned char>& image, double lowRadius, double highRadiu
     applyMaskAndReturn(F);
 }
 
-// F4: Band-stop: remove frequencies with lowRadius <= d <= highRadius
+
 void freqBandStop(CImg<unsigned char>& image, double lowRadius, double highRadius) {
     if (lowRadius < 0) lowRadius = 0;
     if (highRadius < lowRadius) std::swap(lowRadius, highRadius);
@@ -150,9 +144,7 @@ void freqBandStop(CImg<unsigned char>& image, double lowRadius, double highRadiu
     applyMaskAndReturn(F);
 }
 
-// F5: Directional / arbitrary high-pass filter using a user-provided mask image.
-// The mask image must be grayscale; white = keep, black = remove.
-// Mask is assumed to be aligned with the frequency layout.
+
 void freqDirectionalHP(CImg<unsigned char>& image,
                        double cutoffRadius,
                        const char* maskFilename)
@@ -162,10 +154,10 @@ void freqDirectionalHP(CImg<unsigned char>& image,
 
     vector<vector<comp>> F = spatialToFreq(image);
 
-    // Load mask image
+
     CImg<unsigned char> mask(maskFilename);
 
-    // Resize mask if needed
+
     if (mask.width() != W || mask.height() != H) {
         mask.resize(W, H, 1, 1);
     }
@@ -181,21 +173,21 @@ void freqDirectionalHP(CImg<unsigned char>& image,
             int du = u - cx;
             double d2 = double(du*du + dv*dv);
 
-            // High-pass cutoff
+
             if (d2 <= r2) {
                 F[v][u].r = 0.0;
                 F[v][u].i = 0.0;
                 continue;
             }
 
-            // Mask value in [0,1]
+            //mask value in [0,1]
             double m = mask(u, v, 0, 0) / 255.0;
 
-            // Apply attenuation
+            //attenuation
             F[v][u].r *= m;
             F[v][u].i *= m;
 
-            // Enforce conjugate symmetry
+
             int us = (2 * cx - u + W) % W;
             int vs = (2 * cy - v + H) % H;
 
@@ -210,14 +202,14 @@ void freqDirectionalHP(CImg<unsigned char>& image,
 
 
 
-// F6: Phase modifying filter: multiply each frequency element by a unit-magnitude complex
+
 // number P(n,m) = exp(j*( -2π*k*n/N - 2π*l*m/M + (k+l)π ))
 void freqPhaseModify(CImg<unsigned char>& image, int k, int l) {
     int W = image.width();
     int H = image.height();
     vector<vector<comp>> F = spatialToFreq(image);
 
-    // n = row index (0..H-1), m = col index (0..W-1)
+    // n = row index (0 to H-1), m = col index (0toW-1)
     for (int n = 0; n < H; ++n) {
         for (int m = 0; m < W; ++m) {
             double phase = -2.0 * M_PI * k * n / double(H)
