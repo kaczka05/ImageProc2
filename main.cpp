@@ -248,7 +248,7 @@ int main() {
 
         else if (command_name == "stff") {
             outputToOriginal = false;
-            spatialToFreqFast(image);
+            auto F = spatialToFreqFast(image);
             CImg<unsigned char> image("spatialSpectrum.bmp");
             vertical_flip(image);
         }
@@ -419,27 +419,33 @@ else if (command_name == "hm") {
 
 else if (command_name == "m4_iter" || command_name == "m4i") {
 
-    std::string rest; std::getline(std::cin, rest);
+    std::cout << "Started m4_iter\n";
 
-    //int threshold_value = 128;
-
-
-
-
-
-
-    // time
     auto start = std::chrono::high_resolution_clock::now();
 
     CImg<unsigned char> H = morphology::m4Iterative(image);
 
     auto end = std::chrono::high_resolution_clock::now();
     double ms = std::chrono::duration<double, std::milli>(end - start).count();
+
     std::cout << "Processing time (m4_iter): " << ms << " ms\n";
 
     H.save_bmp("out.bmp");
+
     image = H;
     outputToOriginal = false;
+}
+
+else if (command_name == "fourier") {
+
+    spatialToFreq(image);
+
+}
+
+else if (command_name == "Ffourier") {
+
+  auto F = spatialToFreqFast(image);
+
 }
 
 

@@ -144,18 +144,20 @@ namespace morphology {
         for (int y = 1; y < src.height() - 1; ++y) {
             for (int x = 1; x < src.width() - 1; ++x) {
 
-                if (!isForeground(src(x, y))) continue;
-
                 bool match = true;
                 int idx = 0;
 
                 for (int dy = -1; dy <= 1 && match; ++dy) {
                     for (int dx = -1; dx <= 1; ++dx) {
+
                         int m = mask3x3[idx++];
-                        if (dx == 0 && dy == 0) continue;
+
+                        // -1 = don't care
                         if (m == -1) continue;
 
                         int p = isForeground(src(x + dx, y + dy)) ? 1 : 0;
+
+
                         if (p != m) {
                             match = false;
                             break;
@@ -163,7 +165,8 @@ namespace morphology {
                     }
                 }
 
-                if (match) out(x, y) = 255;
+                if (match)
+                    out(x, y) = 255;
             }
         }
 
@@ -172,62 +175,57 @@ namespace morphology {
 
 
 
-    CImg<unsigned char> m4Iterative(
-    const CImg<unsigned char>& A
-) {
-        std::vector<HMTMask> masks;
+
+    CImg<unsigned char> m4Iterative(const CImg<unsigned char>& A) {
+
         std::vector<std::vector<int>> masks_2;
-
-        masks_2.push_back({1, 1, 1,
-                      -1, 0, -1,
-                      -1, -1, -1});
-
+        masks_2.push_back({ 1,  1,  1,
+                           -1,  0, -1,
+                           -1, -1, -1 }); // top
         masks_2.push_back({ 1, -1, -1,
-                      1, 0, -1,
-                      1, -1, -1 });
-
-        masks_2.push_back({ -1, -1, 1,
-                      -1, 0, 1,
-                      -1, -1, 1 });
-
+                            1,  0, -1,
+                            1, -1, -1 }); // left
+        masks_2.push_back({ -1, -1,  1,
+                            -1,  0,  1,
+                            -1, -1,  1 }); // right
         masks_2.push_back({ -1, -1, -1,
-                      -1, 0, -1,
-                      1, 1, 1 });
-        // LEFT
-        masks.push_back({{{-1,-1},{-1,0},{-1,1}}});
-        // UP
-        masks.push_back({{{-1,-1},{0,-1},{1,-1}}});
-        // RIGHT
-        masks.push_back({{{1,-1},{1,0},{1,1}}});
-        // DOWN
-        masks.push_back({{{-1,1},{0,1},{1,1}}});
+                            -1,  0, -1,
+                             1,  1,  1 }); // bottom
+
 
         CImg<unsigned char> H(A.width(), A.height(), 1, 1, 0);
 
-        for (const auto& m : masks_2) {
+
+        for (const auto& mask : masks_2) {
 
             CImg<unsigned char> X = A;
-            CImg<unsigned char> prev;
+            CImg<unsigned char> prev(X.width(), X.height(), 1, 1, 0);
+
 
             do {
                 prev = X;
 
+                CImg<unsigned char> hits = hitAndMissCustom(prev, mask);
 
-                CImg<unsigned char> hits = hitAndMissCustom(A, m);
+                CImg<unsigned char> newX = prev;  // preserve monotonicity
 
-                cimg_forXY(X, x, y) {
-                    if (hits(x,y) ==255 || A(x,y)==255) {
-                        X(x,y) = 255;
-                    }
+                cimg_forXY(newX, x, y) {
+                    if (hits(x, y) == 255)
+                        newX(x, y) = 255;
                 }
+
+                X = std::move(newX);
 
             } while (!(X == prev));
 
-            cimg_forXY(H, x, y)
-                if (X(x,y) == 255)
-                    H(x,y) = 255;
+
+
+            cimg_forXY(H, x, y) {
+                if (X(x, y) == 255) H(x, y) = 255;
+            }
         }
 
         return H;
     }
+
 }

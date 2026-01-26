@@ -209,7 +209,7 @@ void freqPhaseModify(CImg<unsigned char>& image, int k, int l) {
     int H = image.height();
     vector<vector<comp>> F = spatialToFreq(image);
 
-    // n = row index (0 to H-1), m = col index (0toW-1)
+
     for (int n = 0; n < H; ++n) {
         for (int m = 0; m < W; ++m) {
             double phase = -2.0 * M_PI * k * n / double(H)
@@ -221,7 +221,6 @@ void freqPhaseModify(CImg<unsigned char>& image, int k, int l) {
             double r = F[n][m].r;
             double i = F[n][m].i;
 
-            // complex multiply (r + j i) * (c + j s)
             F[n][m].r = r * c - i * s;
             F[n][m].i = r * s + i * c;
         }
