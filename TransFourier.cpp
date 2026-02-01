@@ -240,6 +240,7 @@ vector<vector<comp>> spatialToFreqFast(vector<vector<comp>> image) {
     }
     iterStf++;
     string outputName = "freqSpectrum" + to_string(iterStf) + ".bmp";
+    cout << outputName << endl;
     outputImage.save(outputName.c_str());
     cout << "Saved" << endl;
     freqToSpatialFast(freq);
@@ -366,6 +367,7 @@ vector<vector<comp>> freqToSpatialFast(vector<vector<comp>> image) {
     iterFts ++;
     string outputName = "spatialSpectrum" + to_string(iterFts) ;
     outputName += ".bmp";
+    cout << outputName << endl;
     outputImage.save(outputName.c_str());
     cout << "Saved" << endl;
     return freq;
