@@ -441,11 +441,6 @@ else if (command_name == "fourier") {
 
 }
 
-else if (command_name == "Ffourier") {
-
-  auto F = spatialToFreqFast(image);
-
-}
 
 
 

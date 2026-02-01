@@ -41,7 +41,7 @@ void freqLowPass(CImg<unsigned char>& image, double cutoffRadius) {
     int H = image.height();
 
 
-    vector<vector<comp>> F = spatialToFreqFast(image);
+    vector<vector<comp>> F = spatialToFreqFast( transscribeToVector(image));
 
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
@@ -66,7 +66,7 @@ void freqLowPass(CImg<unsigned char>& image, double cutoffRadius) {
 void freqHighPass(CImg<unsigned char>& image, double cutoffRadius) {
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreqFast(image);
+    vector<vector<comp>> F = spatialToFreqFast( transscribeToVector(image));
 
     comp dc = F[W/2][H/2];
 
@@ -98,7 +98,7 @@ void freqBandPass(CImg<unsigned char>& image, double lowRadius, double highRadiu
 
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreqFast(image);
+    vector<vector<comp>> F = spatialToFreqFast( transscribeToVector(image));
     comp dc = F[W/2][H/2];
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
@@ -128,7 +128,7 @@ void freqBandStop(CImg<unsigned char>& image, double lowRadius, double highRadiu
 
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreqFast(image);
+    vector<vector<comp>> F = spatialToFreqFast( transscribeToVector(image));
     comp dc = F[W/2][H/2];
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
@@ -159,7 +159,7 @@ void freqDirectionalHP(CImg<unsigned char>& image,
     int W = image.width();
     int H = image.height();
 
-    vector<vector<comp>> F = spatialToFreqFast(image);
+    vector<vector<comp>> F = spatialToFreqFast( transscribeToVector(image));
     comp dc = F[W/2][H/2];
 
     CImg<unsigned char> mask(maskFilename);
@@ -215,7 +215,7 @@ void freqDirectionalHP(CImg<unsigned char>& image,
 void freqPhaseModify(CImg<unsigned char>& image, int k, int l) {
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreqFast(image);
+    vector<vector<comp>> F = spatialToFreqFast( transscribeToVector(image));
 
     comp dc = F[W/2][H/2];
     for (int n = 0; n < H; ++n) {
