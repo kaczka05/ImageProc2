@@ -31,7 +31,8 @@ static void decideCenter(const vector<vector<comp>>& F, int W, int H, int &cx, i
 
 static void applyMaskAndReturn(vector<vector<comp>>& F) {
 
-    freqToSpatial(F);
+
+    freqToSpatialFast(F);
 }
 
 
@@ -40,7 +41,7 @@ void freqLowPass(CImg<unsigned char>& image, double cutoffRadius) {
     int H = image.height();
 
 
-    vector<vector<comp>> F = spatialToFreq(image);
+    vector<vector<comp>> F = spatialToFreqFast(image);
 
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
@@ -65,7 +66,10 @@ void freqLowPass(CImg<unsigned char>& image, double cutoffRadius) {
 void freqHighPass(CImg<unsigned char>& image, double cutoffRadius) {
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreq(image);
+    vector<vector<comp>> F = spatialToFreqFast(image);
+
+    comp dc = F[W/2][H/2];
+
 
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
@@ -82,7 +86,8 @@ void freqHighPass(CImg<unsigned char>& image, double cutoffRadius) {
             }
         }
     }
-
+    F[W/2][H/2].r = dc.r;
+    F[W/2][H/2].i = dc.i;
     applyMaskAndReturn(F);
 }
 
@@ -93,8 +98,8 @@ void freqBandPass(CImg<unsigned char>& image, double lowRadius, double highRadiu
 
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreq(image);
-
+    vector<vector<comp>> F = spatialToFreqFast(image);
+    comp dc = F[W/2][H/2];
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
 
@@ -111,7 +116,8 @@ void freqBandPass(CImg<unsigned char>& image, double lowRadius, double highRadiu
             }
         }
     }
-
+    F[W/2][H/2].r = dc.r;
+    F[W/2][H/2].i = dc.i;
     applyMaskAndReturn(F);
 }
 
@@ -122,8 +128,8 @@ void freqBandStop(CImg<unsigned char>& image, double lowRadius, double highRadiu
 
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreq(image);
-
+    vector<vector<comp>> F = spatialToFreqFast(image);
+    comp dc = F[W/2][H/2];
     int cx, cy;
     decideCenter(F, W, H, cx, cy);
 
@@ -140,7 +146,8 @@ void freqBandStop(CImg<unsigned char>& image, double lowRadius, double highRadiu
             }
         }
     }
-
+    F[W/2][H/2].r = dc.r;
+    F[W/2][H/2].i = dc.i;
     applyMaskAndReturn(F);
 }
 
@@ -152,8 +159,8 @@ void freqDirectionalHP(CImg<unsigned char>& image,
     int W = image.width();
     int H = image.height();
 
-    vector<vector<comp>> F = spatialToFreq(image);
-
+    vector<vector<comp>> F = spatialToFreqFast(image);
+    comp dc = F[W/2][H/2];
 
     CImg<unsigned char> mask(maskFilename);
 
@@ -195,7 +202,8 @@ void freqDirectionalHP(CImg<unsigned char>& image,
             F[vs][us].i *= m;
         }
     }
-
+    F[W/2][H/2].r = dc.r;
+    F[W/2][H/2].i = dc.i;
     applyMaskAndReturn(F);
 }
 
@@ -207,9 +215,9 @@ void freqDirectionalHP(CImg<unsigned char>& image,
 void freqPhaseModify(CImg<unsigned char>& image, int k, int l) {
     int W = image.width();
     int H = image.height();
-    vector<vector<comp>> F = spatialToFreq(image);
+    vector<vector<comp>> F = spatialToFreqFast(image);
 
-
+    comp dc = F[W/2][H/2];
     for (int n = 0; n < H; ++n) {
         for (int m = 0; m < W; ++m) {
             double phase = -2.0 * M_PI * k * n / double(H)
@@ -225,6 +233,7 @@ void freqPhaseModify(CImg<unsigned char>& image, int k, int l) {
             F[n][m].i = r * s + i * c;
         }
     }
-
+    F[W/2][H/2].r = dc.r;
+    F[W/2][H/2].i = dc.i;
     applyMaskAndReturn(F);
 }
