@@ -9,6 +9,8 @@
 
     using namespace std;
     using namespace numbers;
+    int iterFts = 0;
+    int iterStf = 0;
     vector<vector<comp>> spatialToFreq(cimg_library::CImg<unsigned char>& image) {
         int w = image.width();
         int h = image.height();
@@ -154,9 +156,9 @@ void freqToSpatial(vector<vector<comp>> image) {
 
 
 vector<comp> mem;
-vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image) {
-    int w = image.width();
-    int h = image.height();
+vector<vector<comp>> spatialToFreqFast(vector<vector<comp>> image) {
+    int w = image.size();
+    int h = image.size();
     vector<vector<comp>> freqA;
     vector<vector<comp>> freq;
     comp temp;
@@ -170,7 +172,7 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
         //cout << v << endl;
         mem.clear();
         for (int u = 0; u < w; u++) {
-            temp.r = image(u, v, 0) //* ((u + v) % 2 ? -1.0 : 1.0)
+            temp.r = image[u][v].r //* ((u + v) % 2 ? -1.0 : 1.0)
             ;
             temp.i = 0;
             mem.push_back(temp);
@@ -225,7 +227,7 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
     }
 
     //frequency domain computed
-    cimg_library::CImg<unsigned char> outputImage = image;
+    cimg_library::CImg<unsigned char> outputImage(w, h, 1, 1, 0);
     int value;
     max = log(1+sqrt(max));
     for (int v = 0; v < h; v++) {
@@ -238,7 +240,10 @@ vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image)
             outputImage(u,v,2) = value;
         }
     }
-    outputImage.save("freqSpectrum.bmp");
+    iterStf ++;
+    string outputName = "freqSpectrum" + iterStf ;
+    outputName += ".bmp";
+    outputImage.save(outputName.c_str());
     cout << "Saved" << endl;
     freqToSpatialFast(freq);
     return freq;
@@ -289,7 +294,7 @@ void bitReversal(vector<comp>& data) {
     }
 }
 
-void freqToSpatialFast(vector<vector<comp>> image) {
+vector<vector<comp>> freqToSpatialFast(vector<vector<comp>> image) {
     int w = image[0].size();
     int h = image.size();
     vector<vector<comp>> freqA;
@@ -346,13 +351,7 @@ void freqToSpatialFast(vector<vector<comp>> image) {
     freqA = freq;
     for (int i=0;i<h;i++) {
         for (int j=0;j<w;j++) {
-            freq[i][j] = freqA[h-i-1][w-j-1];
-        }
-    }
-    freqA = freq;
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            freq[x][h - 1 - y] = freqA[y][x];
+            freq[i][j] = freqA[j][i];
         }
     }
 
@@ -367,9 +366,30 @@ void freqToSpatialFast(vector<vector<comp>> image) {
             outputImage(u,v,0) = value;
         }
     }
-    outputImage.save("spatialSpectrum.bmp");
+    iterFts ++;
+    string outputName = "spatialSpectrum" + iterFts ;
+    outputName += ".bmp";
+    outputImage.save(outputName.c_str());
     cout << "Saved" << endl;
+    return freq;
 }
+
+vector<vector<comp>> transscribeToVector(cimg_library::CImg<unsigned char>& image) {
+    vector<vector<comp>> output;
+    vector<comp> temp;
+    comp pix;
+    for (int i = 0; i < image.width(); i++) {
+        for (int j = 0; j < image.height(); j++) {
+            pix.r = image.at(i,j);
+            temp.push_back(pix);
+        }
+        output.push_back(temp);
+        temp.clear();
+    }
+    return output;
+}
+
+
 
 
 

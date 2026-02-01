@@ -248,9 +248,8 @@ int main() {
 
         else if (command_name == "stff") {
             outputToOriginal = false;
-            auto F = spatialToFreqFast(image);
+            auto F = spatialToFreqFast(transscribeToVector(image));
             CImg<unsigned char> image("spatialSpectrum.bmp");
-            vertical_flip(image);
         }
 
 

@@ -35,9 +35,10 @@ struct comp {
 
 
 vector<vector<comp>> spatialToFreq(cimg_library::CImg<unsigned char>& image);
-vector<vector<comp>> spatialToFreqFast(cimg_library::CImg<unsigned char>& image);
+vector<vector<comp>> spatialToFreqFast(vector<vector<comp>> image);
+vector<vector<comp>> transscribeToVector(cimg_library::CImg<unsigned char>& image);
 void freqToSpatial(vector<vector<comp>>);
-void freqToSpatialFast(vector<vector<comp>>);
+vector<vector<comp>> freqToSpatialFast(vector<vector<comp>>);
 void stfFFT(vector<comp>& a, bool foreward);
 int bitReverse(int index, int log2n);
 void bitReversal(vector<comp>& data);
