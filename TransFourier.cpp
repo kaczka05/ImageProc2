@@ -236,13 +236,10 @@ vector<vector<comp>> spatialToFreqFast(vector<vector<comp>> image) {
             value = log(1 + value);
             value = (int) (255*value/max);
             outputImage(u,v,0) = value;
-            //outputImage(u,v,1) = value;
-            //outputImage(u,v,2) = value;
         }
     }
-    iterStf ++;
-    string outputName = "freqSpectrum" + iterStf ;
-    outputName += ".bmp";
+    iterStf++;
+    string outputName = "freqSpectrum" + to_string(iterStf) + ".bmp";
     outputImage.save(outputName.c_str());
     cout << "Saved" << endl;
     freqToSpatialFast(freq);
@@ -367,7 +364,7 @@ vector<vector<comp>> freqToSpatialFast(vector<vector<comp>> image) {
         }
     }
     iterFts ++;
-    string outputName = "spatialSpectrum" + iterFts ;
+    string outputName = "spatialSpectrum" + to_string(iterFts) ;
     outputName += ".bmp";
     outputImage.save(outputName.c_str());
     cout << "Saved" << endl;
@@ -380,7 +377,7 @@ vector<vector<comp>> transscribeToVector(cimg_library::CImg<unsigned char>& imag
     comp pix;
     for (int i = 0; i < image.width(); i++) {
         for (int j = 0; j < image.height(); j++) {
-            pix.r = image.at(i,j);
+            pix.r = image(i,j,0);
             temp.push_back(pix);
         }
         output.push_back(temp);
