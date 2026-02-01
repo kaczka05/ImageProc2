@@ -236,8 +236,8 @@ vector<vector<comp>> spatialToFreqFast(vector<vector<comp>> image) {
             value = log(1 + value);
             value = (int) (255*value/max);
             outputImage(u,v,0) = value;
-            outputImage(u,v,1) = value;
-            outputImage(u,v,2) = value;
+            //outputImage(u,v,1) = value;
+            //outputImage(u,v,2) = value;
         }
     }
     iterStf ++;
